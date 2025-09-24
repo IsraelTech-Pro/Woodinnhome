@@ -51,7 +51,7 @@ function HorizontalProductSection({
   if (products.length === 0) return null;
 
   return (
-    <section className="py-6 md:py-8">
+    <section className="py-2 md:py-3">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className={`${bgColor} ${textColor} rounded-lg p-4 mb-4`}>
@@ -146,27 +146,17 @@ function HorizontalProductSection({
 function JumiaHero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   
-  // Woodinn Home promotional banners using brand images
+  // Woodinn Home promotional banners - image only (no text overlays)
   const banners = [
     {
       id: 1,
-      title: "We're always ready to deliver",
-      subtitle: "SHOP NOW!",
-      description: "Home Appliances • Electricals • Furniture & More",
-      buttonText: "Visit or call us",
       image: woodinnDeliveryImg,
-      bgColor: "from-orange-500 to-red-600",
-      link: "/products"
+      alt: "Woodinn Home Delivery Service"
     },
     {
       id: 2,
-      title: "Welcome November!",
-      subtitle: "HAPPY NEW MONTH",
-      description: "Home Appliances • Electricals • Furniture & More",
-      buttonText: "Shop Collection",
-      image: woodinnNovemberImg, 
-      bgColor: "from-orange-600 to-red-700",
-      link: "/products"
+      image: woodinnNovemberImg,
+      alt: "Woodinn Home November Promotion"
     }
   ];
 
@@ -183,11 +173,11 @@ function JumiaHero() {
   }, [banners.length]);
 
   return (
-    <section className="bg-gray-50 py-4">
+    <section className="bg-gray-50 py-2">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* Left Sidebar - Categories */}
-          <div className="md:col-span-1">
+          {/* Left Sidebar - Categories - Hidden on mobile */}
+          <div className="hidden md:block md:col-span-1">
             <Card className="p-4">
               <h3 className="font-semibold mb-3 text-sm">Categories</h3>
               <div className="space-y-2">
@@ -212,8 +202,8 @@ function JumiaHero() {
             </Card>
           </div>
 
-          {/* Main Slideshow - Takes remaining space */}
-          <div className="md:col-span-3">
+          {/* Main Slideshow - Takes full width on mobile, 3/4 on desktop */}
+          <div className="col-span-1 md:col-span-3">
             <div className="relative h-64 lg:h-80 rounded-lg overflow-hidden">
               {banners.map((banner, index) => (
                 <div
@@ -222,35 +212,12 @@ function JumiaHero() {
                     index === currentSlide ? 'opacity-100' : 'opacity-0'
                   }`}
                 >
-                  <div className={`h-full bg-gradient-to-r ${banner.bgColor} flex items-center relative overflow-hidden`}>
-                    <div className="flex-1 p-6 lg:p-8 text-white z-10">
-                      <h2 className="text-2xl lg:text-3xl font-bold mb-2" data-testid={`hero-banner-title-${banner.id}`}>
-                        {banner.title}
-                      </h2>
-                      <p className="text-lg lg:text-xl font-semibold mb-2 text-yellow-200" data-testid={`hero-banner-subtitle-${banner.id}`}>
-                        {banner.subtitle}
-                      </p>
-                      <p className="text-sm mb-4 opacity-90" data-testid={`hero-banner-description-${banner.id}`}>
-                        {banner.description}
-                      </p>
-                      <Link href={banner.link}>
-                        <Button 
-                          size="sm" 
-                          className="bg-white text-gray-900 hover:bg-gray-100 font-semibold"
-                          data-testid={`hero-banner-button-${banner.id}`}
-                        >
-                          {banner.buttonText}
-                        </Button>
-                      </Link>
-                    </div>
-                    <div className="flex-1 relative">
-                      <img 
-                        src={banner.image} 
-                        alt={banner.title}
-                        className="absolute right-0 top-0 w-full h-full object-cover opacity-20 lg:opacity-40"
-                      />
-                    </div>
-                  </div>
+                  <img 
+                    src={banner.image} 
+                    alt={banner.alt}
+                    className="w-full h-full object-cover"
+                    data-testid={`hero-banner-${banner.id}`}
+                  />
                 </div>
               ))}
               

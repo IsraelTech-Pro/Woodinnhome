@@ -244,13 +244,13 @@ export default function Products() {
         {/* Products Grid */}
         <div className="flex-1">
           {isLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
                 <div key={i} className="animate-pulse">
-                  <div className="bg-gray-200 rounded-xl h-48 mb-4"></div>
-                  <div className="space-y-2">
-                    <div className="bg-gray-200 h-4 rounded"></div>
-                    <div className="bg-gray-200 h-4 rounded w-2/3"></div>
+                  <div className="bg-gray-200 rounded-lg aspect-square mb-2"></div>
+                  <div className="space-y-1">
+                    <div className="bg-gray-200 h-3 rounded"></div>
+                    <div className="bg-gray-200 h-3 rounded w-2/3"></div>
                   </div>
                 </div>
               ))}
@@ -262,7 +262,7 @@ export default function Products() {
                   Showing {sortedProducts.length} product{sortedProducts.length !== 1 ? 's' : ''}
                 </p>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                 {sortedProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
