@@ -193,10 +193,10 @@ export default function ProductDetail() {
           {/* Product Images Gallery - Left Thumbnails + Main Image */}
           <div className="space-y-4">
             <div className="flex gap-4">
-              {/* Vertical Thumbnail Gallery on Left */}
-              {product.images.length > 1 && (
-                <div className="flex flex-col gap-2 w-20">
-                  {product.images.map((image, index) => (
+              {/* Thumbnail Column - Should be on LEFT */}
+              <div className="flex flex-col gap-2 w-20">
+                {product.images.length > 1 ? (
+                  product.images.map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
@@ -209,11 +209,15 @@ export default function ProductDetail() {
                     >
                       <img src={image} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
                     </button>
-                  ))}
-                </div>
-              )}
+                  ))
+                ) : (
+                  <div className="w-16 h-16 flex items-center justify-center text-gray-400">
+                    {/* Empty space for single image products */}
+                  </div>
+                )}
+              </div>
               
-              {/* Main Image on Right */}
+              {/* Main Image - Should be on RIGHT */}
               <div className="relative group flex-1 max-w-md mx-auto lg:max-w-full">
                 <div 
                   className={`relative aspect-square rounded-xl overflow-hidden bg-gray-50 shadow-md cursor-zoom-in transition-all duration-300 ${
