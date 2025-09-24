@@ -99,9 +99,32 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
           </div>
           
-          {/* Price Section - Better Design */}
+          {/* Price Section - Mobile-First Design */}
           <div className="border-t border-gray-100 pt-3 mt-2">
-            <div className="flex items-center justify-between">
+            {/* Mobile: Stack prices vertically for better visibility */}
+            <div className="block sm:hidden">
+              <div className="flex items-center justify-between mb-1">
+                <span 
+                  className="text-lg font-bold text-gray-900" 
+                  data-testid={`product-price-${product.id}`}
+                >
+                  {formatPrice(product.price)}
+                </span>
+                {discountPercentage > 0 && (
+                  <span className="text-xs text-green-600 font-semibold bg-green-50 px-2 py-1 rounded-full">
+                    Save {discountPercentage}%
+                  </span>
+                )}
+              </div>
+              {product.originalPrice && (
+                <span className="text-sm text-gray-400 line-through block">
+                  {formatPrice(product.originalPrice)}
+                </span>
+              )}
+            </div>
+
+            {/* Desktop: Horizontal layout */}
+            <div className="hidden sm:flex items-center justify-between">
               <div className="flex items-baseline gap-2">
                 <span 
                   className="text-lg font-bold text-gray-900" 
