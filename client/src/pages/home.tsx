@@ -9,6 +9,8 @@ import { Sofa, Tv, Palette, Zap } from "lucide-react";
 import { type ProductWithCategory, type Category } from "@shared/schema";
 import { useRef, useState, useEffect } from "react";
 import type { LucideIcon } from "lucide-react";
+import woodinnDeliveryImg from "@assets/image_1758733567781.png";
+import woodinnNovemberImg from "@assets/image_1758733665512.png";
 
 // Horizontal scrolling product section component
 interface HorizontalProductSectionProps {
@@ -144,27 +146,27 @@ function HorizontalProductSection({
 function JumiaHero() {
   const [currentSlide, setCurrentSlide] = useState(0);
   
-  // Sample promotional banners - in real app, these would come from API/admin
+  // Woodinn Home promotional banners using brand images
   const banners = [
     {
       id: 1,
-      title: "Furniture Sale",
-      subtitle: "Up to 45% OFF",
-      description: "Transform your home with premium furniture",
-      buttonText: "Shop Now",
-      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
-      bgColor: "from-blue-600 to-purple-600",
-      link: "/products/furniture"
+      title: "We're always ready to deliver",
+      subtitle: "SHOP NOW!",
+      description: "Home Appliances • Electricals • Furniture & More",
+      buttonText: "Visit or call us",
+      image: woodinnDeliveryImg,
+      bgColor: "from-orange-500 to-red-600",
+      link: "/products"
     },
     {
       id: 2,
-      title: "Electronics Wednesday",
-      subtitle: "Up to 30% OFF",
-      description: "Latest smartphones, TVs & appliances",
-      buttonText: "Shop Electronics",
-      image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
-      bgColor: "from-purple-600 to-pink-600",
-      link: "/products/electronics"
+      title: "Welcome November!",
+      subtitle: "HAPPY NEW MONTH",
+      description: "Home Appliances • Electricals • Furniture & More",
+      buttonText: "Shop Collection",
+      image: woodinnNovemberImg, 
+      bgColor: "from-orange-600 to-red-700",
+      link: "/products"
     }
   ];
 
