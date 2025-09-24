@@ -5,11 +5,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useCartStore } from "@/lib/cart-store";
+import { useQuery } from "@tanstack/react-query";
+import { useAuthStore } from "@/lib/auth-store";
+import { type CartItemWithProduct } from "@shared/schema";
 
 export default function Header() {
   const [location] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const { setOpen: setCartOpen, getItemCount } = useCartStore();
+  const { setOpen: setCartOpen } = useCartStore();
+  const { userId } = useAuthStore();
+
+  // Get cart data from API instead of Zustand store
+  const { data: cartItems = [] } = useQuery<CartItemWithProduct[]>({
+    queryKey: ["/api/cart", { userId }],
+  });
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,7 +27,8 @@ export default function Header() {
     }
   };
 
-  const cartItemCount = getItemCount();
+  // Calculate cart count from API data
+  const cartItemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-border">

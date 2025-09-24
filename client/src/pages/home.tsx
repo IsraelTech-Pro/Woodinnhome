@@ -2,7 +2,31 @@ import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, TrendingUp, Sparkles, Clock, ArrowRight, Star } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  TrendingUp, 
+  Sparkles, 
+  Clock, 
+  ArrowRight, 
+  Star,
+  Shield,
+  Truck,
+  Phone,
+  Award,
+  Users,
+  CheckCircle,
+  Timer,
+  Gift,
+  Mail,
+  Play,
+  Download,
+  Headphones,
+  CreditCard,
+  RefreshCw
+} from "lucide-react";
 import ProductCard from "@/components/product-card";
 import CategoryCard from "@/components/category-card";
 import { Sofa, Tv, Palette, Zap } from "lucide-react";
@@ -325,6 +349,246 @@ export default function Home() {
         />
       )}
 
+      {/* Flash Deals Section */}
+      <section className="py-6 bg-gradient-to-r from-red-500 to-orange-600">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <Timer className="h-8 w-8 text-white" />
+              <div>
+                <h2 className="text-2xl font-bold text-white" data-testid="flash-deals-title">
+                  Flash Deals
+                </h2>
+                <p className="text-white/80" data-testid="flash-deals-subtitle">
+                  Limited time offers
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-lg">
+              <Clock className="h-5 w-5 text-white" />
+              <span className="text-white font-mono text-lg" data-testid="flash-deals-countdown">
+                02:15:33
+              </span>
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {bestSellersProducts.slice(0, 4).map((product, index) => (
+              <Card key={product.id} className="p-4 bg-white/10 backdrop-blur-sm border-white/20" data-testid={`flash-deal-${product.id}`}>
+                <div className="text-center">
+                  <img src={product.images[0]} alt={product.name} className="w-16 h-16 mx-auto mb-2 rounded-lg object-cover" />
+                  <h4 className="text-white font-semibold text-sm mb-1">{product.name}</h4>
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-white font-bold">{`GHS ${parseFloat(product.price).toLocaleString()}`}</span>
+                    <Badge className="bg-yellow-400 text-black text-xs">-{20 + index * 5}%</Badge>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust & Security Section */}
+      <section className="py-8 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold text-center mb-8" data-testid="trust-section-title">
+            Why Choose Woodinn Home?
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="text-center" data-testid="trust-feature-delivery">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Truck className="h-8 w-8 text-orange-600" />
+              </div>
+              <h4 className="font-semibold mb-2">Free Delivery</h4>
+              <p className="text-sm text-gray-600">Free delivery across Nsawam and Eastern Region</p>
+            </div>
+            
+            <div className="text-center" data-testid="trust-feature-warranty">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Shield className="h-8 w-8 text-green-600" />
+              </div>
+              <h4 className="font-semibold mb-2">Quality Guarantee</h4>
+              <p className="text-sm text-gray-600">1-year warranty on all electrical items</p>
+            </div>
+            
+            <div className="text-center" data-testid="trust-feature-support">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Headphones className="h-8 w-8 text-blue-600" />
+              </div>
+              <h4 className="font-semibold mb-2">24/7 Support</h4>
+              <p className="text-sm text-gray-600">Round-the-clock customer service</p>
+            </div>
+            
+            <div className="text-center" data-testid="trust-feature-payment">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CreditCard className="h-8 w-8 text-purple-600" />
+              </div>
+              <h4 className="font-semibold mb-2">Flexible Payment</h4>
+              <p className="text-sm text-gray-600">Cash on delivery & Mobile Money</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Customer Statistics */}
+      <section className="py-8 bg-orange-600 text-white">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div data-testid="stat-customers">
+              <div className="text-3xl font-bold mb-2">5,000+</div>
+              <div className="text-orange-100">Happy Customers</div>
+            </div>
+            <div data-testid="stat-products">
+              <div className="text-3xl font-bold mb-2">1,200+</div>
+              <div className="text-orange-100">Quality Products</div>
+            </div>
+            <div data-testid="stat-experience">
+              <div className="text-3xl font-bold mb-2">15+</div>
+              <div className="text-orange-100">Years Experience</div>
+            </div>
+            <div data-testid="stat-delivery">
+              <div className="text-3xl font-bold mb-2">98%</div>
+              <div className="text-orange-100">On-Time Delivery</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Customer Testimonials */}
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold text-center mb-8" data-testid="testimonials-title">
+            What Our Customers Say
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="p-6" data-testid="testimonial-1">
+              <div className="flex items-center gap-1 mb-4">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <p className="text-gray-600 mb-4">
+                "Amazing quality furniture! The delivery was prompt and the staff was very helpful. Highly recommended!"
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                  <span className="text-orange-600 font-semibold">AK</span>
+                </div>
+                <div>
+                  <div className="font-semibold">Akosua Mensah</div>
+                  <div className="text-sm text-gray-500">Nsawam</div>
+                </div>
+              </div>
+            </Card>
+            
+            <Card className="p-6" data-testid="testimonial-2">
+              <div className="flex items-center gap-1 mb-4">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <p className="text-gray-600 mb-4">
+                "Best electronics store in Eastern Region. Great prices and excellent customer service. Very satisfied!"
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span className="text-blue-600 font-semibold">KO</span>
+                </div>
+                <div>
+                  <div className="font-semibold">Kwame Osei</div>
+                  <div className="text-sm text-gray-500">Koforidua</div>
+                </div>
+              </div>
+            </Card>
+            
+            <Card className="p-6" data-testid="testimonial-3">
+              <div className="flex items-center gap-1 mb-4">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <p className="text-gray-600 mb-4">
+                "Fast delivery and quality products. The mobile money payment option made it very convenient for me."
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="text-green-600 font-semibold">EA</span>
+                </div>
+                <div>
+                  <div className="font-semibold">Esi Addo</div>
+                  <div className="text-sm text-gray-500">Akyem Tafo</div>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Signup */}
+      <section className="py-12 bg-gradient-to-r from-orange-500 to-red-500">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-2xl mx-auto">
+            <Mail className="h-12 w-12 text-white mx-auto mb-4" />
+            <h2 className="text-3xl font-bold text-white mb-4" data-testid="newsletter-title">
+              Stay Updated with Latest Deals
+            </h2>
+            <p className="text-white/80 mb-6" data-testid="newsletter-subtitle">
+              Get exclusive offers, new arrivals, and special discounts delivered to your phone via WhatsApp
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <Input
+                type="tel"
+                placeholder="Enter your phone number"
+                className="flex-1 bg-white/10 border-white/30 text-white placeholder:text-white/60"
+                data-testid="newsletter-phone-input"
+              />
+              <Button 
+                className="bg-white text-orange-600 hover:bg-gray-100 font-semibold px-8"
+                data-testid="newsletter-subscribe-btn"
+              >
+                Subscribe
+              </Button>
+            </div>
+            <p className="text-white/60 text-sm mt-4">
+              We respect your privacy. No spam, unsubscribe anytime.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Category Showcase */}
+      <section className="py-12">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold text-center mb-8" data-testid="category-showcase-title">
+            Shop by Category
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            {categories.map((category) => (
+              <Link key={category.id} href={`/products/${category.slug}`}>
+                <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden" data-testid={`category-showcase-${category.slug}`}>
+                  <div className="aspect-square bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                    {category.slug === 'furniture' && <Sofa className="h-16 w-16 text-orange-600" />}
+                    {category.slug === 'electronics' && <Tv className="h-16 w-16 text-orange-600" />}
+                    {category.slug === 'home-decor' && <Palette className="h-16 w-16 text-orange-600" />}
+                    {!['furniture', 'electronics', 'home-decor'].includes(category.slug) && (
+                      <Gift className="h-16 w-16 text-orange-600" />
+                    )}
+                  </div>
+                  <div className="p-4 text-center">
+                    <h3 className="font-semibold group-hover:text-orange-600 transition-colors">
+                      {category.name}
+                    </h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Explore {category.name.toLowerCase()}
+                    </p>
+                  </div>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
 
     </div>
   );
