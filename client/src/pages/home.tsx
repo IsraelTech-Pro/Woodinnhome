@@ -455,75 +455,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Customer Testimonials */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold text-center mb-8" data-testid="testimonials-title">
-            What Our Customers Say
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="p-6" data-testid="testimonial-1">
-              <div className="flex items-center gap-1 mb-4">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-              <p className="text-gray-600 mb-4">
-                "Amazing quality furniture! The delivery was prompt and the staff was very helpful. Highly recommended!"
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-                  <span className="text-orange-600 font-semibold">AK</span>
-                </div>
-                <div>
-                  <div className="font-semibold">Akosua Mensah</div>
-                  <div className="text-sm text-gray-500">Nsawam</div>
-                </div>
-              </div>
-            </Card>
-            
-            <Card className="p-6" data-testid="testimonial-2">
-              <div className="flex items-center gap-1 mb-4">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-              <p className="text-gray-600 mb-4">
-                "Best electronics store in Eastern Region. Great prices and excellent customer service. Very satisfied!"
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-blue-600 font-semibold">KO</span>
-                </div>
-                <div>
-                  <div className="font-semibold">Kwame Osei</div>
-                  <div className="text-sm text-gray-500">Koforidua</div>
-                </div>
-              </div>
-            </Card>
-            
-            <Card className="p-6" data-testid="testimonial-3">
-              <div className="flex items-center gap-1 mb-4">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-              <p className="text-gray-600 mb-4">
-                "Fast delivery and quality products. The mobile money payment option made it very convenient for me."
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                  <span className="text-green-600 font-semibold">EA</span>
-                </div>
-                <div>
-                  <div className="font-semibold">Esi Addo</div>
-                  <div className="text-sm text-gray-500">Akyem Tafo</div>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       {/* Newsletter Signup */}
       <section className="py-12 bg-gradient-to-r from-orange-500 to-red-500">
@@ -557,38 +488,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Category Showcase */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold text-center mb-8" data-testid="category-showcase-title">
-            Shop by Category
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-            {categories.map((category) => (
-              <Link key={category.id} href={`/products/${category.slug}`}>
-                <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer overflow-hidden" data-testid={`category-showcase-${category.slug}`}>
-                  <div className="aspect-square bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                    {category.slug === 'furniture' && <Sofa className="h-16 w-16 text-orange-600" />}
-                    {category.slug === 'electronics' && <Tv className="h-16 w-16 text-orange-600" />}
-                    {category.slug === 'home-decor' && <Palette className="h-16 w-16 text-orange-600" />}
-                    {!['furniture', 'electronics', 'home-decor'].includes(category.slug) && (
-                      <Gift className="h-16 w-16 text-orange-600" />
-                    )}
-                  </div>
-                  <div className="p-4 text-center">
-                    <h3 className="font-semibold group-hover:text-orange-600 transition-colors">
-                      {category.name}
-                    </h3>
-                    <p className="text-sm text-gray-500 mt-1">
-                      Explore {category.name.toLowerCase()}
-                    </p>
-                  </div>
-                </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
 
     </div>
   );
