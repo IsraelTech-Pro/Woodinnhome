@@ -62,7 +62,8 @@ export default function Checkout() {
 
   const createOrderMutation = useMutation({
     mutationFn: async (orderData: any) => {
-      return apiRequest("POST", "/api/orders", orderData);
+      const response = await apiRequest("POST", "/api/orders", orderData);
+      return await response.json();
     },
     onSuccess: (order: any) => {
       queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
