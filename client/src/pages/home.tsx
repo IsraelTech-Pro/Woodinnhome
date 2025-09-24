@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, TrendingUp, Sparkles, Clock, ArrowRight, Truck, Smartphone, Shield, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, TrendingUp, Sparkles, Clock, ArrowRight, Star } from "lucide-react";
 import ProductCard from "@/components/product-card";
 import CategoryCard from "@/components/category-card";
 import { Sofa, Tv, Palette, Zap } from "lucide-react";
@@ -185,9 +185,9 @@ function JumiaHero() {
   return (
     <section className="bg-gray-50 py-4">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Left Sidebar - Categories */}
-          <div className="lg:col-span-1">
+          <div className="md:col-span-1">
             <Card className="p-4">
               <h3 className="font-semibold mb-3 text-sm">Categories</h3>
               <div className="space-y-2">
@@ -212,8 +212,8 @@ function JumiaHero() {
             </Card>
           </div>
 
-          {/* Center - Main Slideshow */}
-          <div className="lg:col-span-2">
+          {/* Main Slideshow - Takes remaining space */}
+          <div className="md:col-span-3">
             <div className="relative h-64 lg:h-80 rounded-lg overflow-hidden">
               {banners.map((banner, index) => (
                 <div
@@ -268,27 +268,6 @@ function JumiaHero() {
                 ))}
               </div>
             </div>
-          </div>
-
-          {/* Right Sidebar - Services */}
-          <div className="lg:col-span-1 space-y-4">
-            <Card className="p-4 text-center">
-              <Truck className="h-8 w-8 text-primary mx-auto mb-2" />
-              <h4 className="font-semibold text-sm">WOODINN DELIVERY</h4>
-              <p className="text-xs text-gray-600">Send parcels easily</p>
-            </Card>
-            
-            <Card className="p-4 text-center">
-              <Smartphone className="h-8 w-8 text-primary mx-auto mb-2" />
-              <h4 className="font-semibold text-sm">SELL ON WOODINN</h4>
-              <p className="text-xs text-gray-600">Make more money</p>
-            </Card>
-            
-            <Card className="p-4 text-center bg-primary text-white">
-              <Shield className="h-8 w-8 text-white mx-auto mb-2" />
-              <h4 className="font-semibold text-sm">HOME STORE LOVER</h4>
-              <p className="text-xs opacity-90">UP TO 45% OFF</p>
-            </Card>
           </div>
         </div>
       </div>
