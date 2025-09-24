@@ -403,62 +403,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Customer Statistics */}
-      <section className="py-8 bg-orange-600 text-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div data-testid="stat-customers">
-              <div className="text-3xl font-bold mb-2">5,000+</div>
-              <div className="text-orange-100">Happy Customers</div>
-            </div>
-            <div data-testid="stat-products">
-              <div className="text-3xl font-bold mb-2">1,200+</div>
-              <div className="text-orange-100">Quality Products</div>
-            </div>
-            <div data-testid="stat-experience">
-              <div className="text-3xl font-bold mb-2">15+</div>
-              <div className="text-orange-100">Years Experience</div>
-            </div>
-            <div data-testid="stat-delivery">
-              <div className="text-3xl font-bold mb-2">98%</div>
-              <div className="text-orange-100">On-Time Delivery</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-      {/* Newsletter Signup */}
-      <section className="py-12 bg-gradient-to-r from-orange-500 to-red-500">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-2xl mx-auto">
-            <Mail className="h-12 w-12 text-white mx-auto mb-4" />
-            <h2 className="text-3xl font-bold text-white mb-4" data-testid="newsletter-title">
-              Stay Updated with Latest Deals
-            </h2>
-            <p className="text-white/80 mb-6" data-testid="newsletter-subtitle">
-              Get exclusive offers, new arrivals, and special discounts delivered to your phone via WhatsApp
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <Input
-                type="tel"
-                placeholder="Enter your phone number"
-                className="flex-1 bg-white/10 border-white/30 text-white placeholder:text-white/60"
-                data-testid="newsletter-phone-input"
-              />
-              <Button 
-                className="bg-white text-orange-600 hover:bg-gray-100 font-semibold px-8"
-                data-testid="newsletter-subscribe-btn"
-              >
-                Subscribe
-              </Button>
-            </div>
-            <p className="text-white/60 text-sm mt-4">
-              We respect your privacy. No spam, unsubscribe anytime.
-            </p>
-          </div>
-        </div>
-      </section>
 
 
     </div>
