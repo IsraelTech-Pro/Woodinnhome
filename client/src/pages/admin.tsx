@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Plus, Edit, Trash2, Package, Users, BarChart3, Eye, Upload, Camera, Link } from "lucide-react";
+import { Plus, Edit, Trash2, Package, Users, BarChart3, Eye, Upload, Camera, Link, Home, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +16,7 @@ import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { type ProductWithCategory, type Category, type OrderWithItems } from "@shared/schema";
+import { type ProductWithCategory, type Category, type OrderWithItems, type HomeSection, insertHomeSectionSchema } from "@shared/schema";
 
 const productSchema = z.object({
   name: z.string().min(2, "Product name must be at least 2 characters"),
@@ -40,12 +40,30 @@ const productSchema = z.object({
 
 type ProductForm = z.infer<typeof productSchema>;
 
+// Home Section Form Schema
+const homeSectionSchema = z.object({
+  title: z.string().min(2, "Title must be at least 2 characters"),
+  subtitle: z.string().optional(),
+  sectionType: z.enum(["featured", "deals", "trending", "newArrivals", "categories", "testimonials", "brands"], {
+    required_error: "Section type is required",
+  }),
+  displayOrder: z.number().min(0, "Display order must be 0 or greater"),
+  isActive: z.boolean(),
+  config: z.object({}).optional(),
+});
+
+type HomeSectionForm = z.infer<typeof homeSectionSchema>;
+
 export default function Admin() {
   const { toast } = useToast();
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductWithCategory | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [newTag, setNewTag] = useState("");
+  
+  // Home Sections state
+  const [isAddHomeSectionOpen, setIsAddHomeSectionOpen] = useState(false);
+  const [editingHomeSection, setEditingHomeSection] = useState<HomeSection | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: products = [], isLoading: productsLoading } = useQuery<ProductWithCategory[]>({
@@ -58,6 +76,10 @@ export default function Admin() {
 
   const { data: orders = [] } = useQuery<OrderWithItems[]>({
     queryKey: ["/api/orders"],
+  });
+
+  const { data: homeSections = [], isLoading: homeSectionsLoading } = useQuery<HomeSection[]>({
+    queryKey: ["/api/home-sections"],
   });
 
   const form = useForm<ProductForm>({
@@ -75,6 +97,18 @@ export default function Admin() {
       quantity: 0,
       featured: false,
       tags: [],
+    },
+  });
+
+  const homeSectionForm = useForm<HomeSectionForm>({
+    resolver: zodResolver(homeSectionSchema),
+    defaultValues: {
+      title: "",
+      subtitle: "",
+      sectionType: "featured",
+      displayOrder: 0,
+      isActive: true,
+      config: {},
     },
   });
 
@@ -131,6 +165,50 @@ export default function Admin() {
     },
     onError: () => {
       toast({ title: "Error updating order status", variant: "destructive" });
+    },
+  });
+
+  // Home Sections mutations
+  const createHomeSectionMutation = useMutation({
+    mutationFn: async (data: HomeSectionForm) => {
+      return apiRequest("POST", "/api/home-sections", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/home-sections"] });
+      toast({ title: "Home section created successfully!" });
+      setIsAddHomeSectionOpen(false);
+      homeSectionForm.reset();
+    },
+    onError: () => {
+      toast({ title: "Error creating home section", variant: "destructive" });
+    },
+  });
+
+  const updateHomeSectionMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: Partial<HomeSectionForm> }) => {
+      return apiRequest("PUT", `/api/home-sections/${id}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/home-sections"] });
+      toast({ title: "Home section updated successfully!" });
+      setEditingHomeSection(null);
+      homeSectionForm.reset();
+    },
+    onError: () => {
+      toast({ title: "Error updating home section", variant: "destructive" });
+    },
+  });
+
+  const deleteHomeSectionMutation = useMutation({
+    mutationFn: async (id: string) => {
+      return apiRequest("DELETE", `/api/home-sections/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/home-sections"] });
+      toast({ title: "Home section deleted successfully!" });
+    },
+    onError: () => {
+      toast({ title: "Error deleting home section", variant: "destructive" });
     },
   });
 
@@ -219,6 +297,40 @@ export default function Admin() {
     form.setValue("tags", currentTags.filter((_, i) => i !== index));
   };
 
+  // Home Section helper functions
+  const onHomeSectionSubmit = (data: HomeSectionForm) => {
+    if (editingHomeSection) {
+      updateHomeSectionMutation.mutate({ id: editingHomeSection.id, data });
+    } else {
+      createHomeSectionMutation.mutate(data);
+    }
+  };
+
+  const handleEditHomeSection = (section: HomeSection) => {
+    setEditingHomeSection(section);
+    homeSectionForm.reset({
+      title: section.title,
+      subtitle: section.subtitle || "",
+      sectionType: section.sectionType as any,
+      displayOrder: section.displayOrder,
+      isActive: section.isActive,
+      config: section.config || {},
+    });
+    setIsAddHomeSectionOpen(true);
+  };
+
+  const handleDeleteHomeSection = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this home section?")) {
+      deleteHomeSectionMutation.mutate(id);
+    }
+  };
+
+  const resetHomeSectionForm = () => {
+    setEditingHomeSection(null);
+    setIsAddHomeSectionOpen(false);
+    homeSectionForm.reset();
+  };
+
   const formatPrice = (price: string | number) => {
     return `GHS ${parseFloat(price.toString()).toLocaleString()}`;
   };
@@ -260,11 +372,12 @@ export default function Admin() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview" data-testid="overview-tab">Overview</TabsTrigger>
           <TabsTrigger value="products" data-testid="products-tab">Products</TabsTrigger>
           <TabsTrigger value="orders" data-testid="orders-tab">Orders</TabsTrigger>
           <TabsTrigger value="analytics" data-testid="analytics-tab">Analytics</TabsTrigger>
+          <TabsTrigger value="home-sections" data-testid="home-sections-tab">Home Sections</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -976,6 +1089,213 @@ export default function Admin() {
                   <p className="text-sm text-muted-foreground">Success Rate</p>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Home Sections Tab */}
+        <TabsContent value="home-sections" className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">Home Sections</h2>
+            <Dialog open={isAddHomeSectionOpen} onOpenChange={setIsAddHomeSectionOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={() => {
+                  setEditingHomeSection(null);
+                  homeSectionForm.reset();
+                }} data-testid="add-home-section">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Section
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle>
+                    {editingHomeSection ? "Edit Home Section" : "Add New Home Section"}
+                  </DialogTitle>
+                </DialogHeader>
+                <Form {...homeSectionForm}>
+                  <form onSubmit={homeSectionForm.handleSubmit(onHomeSectionSubmit)} className="space-y-4">
+                    <FormField
+                      control={homeSectionForm.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Title</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Section title" {...field} data-testid="input-section-title" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={homeSectionForm.control}
+                      name="subtitle"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Subtitle (Optional)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Section subtitle" {...field} data-testid="input-section-subtitle" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={homeSectionForm.control}
+                      name="sectionType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Section Type</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger data-testid="select-section-type">
+                                <SelectValue placeholder="Select section type" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="featured">Featured Products</SelectItem>
+                              <SelectItem value="deals">Flash Deals</SelectItem>
+                              <SelectItem value="trending">Trending</SelectItem>
+                              <SelectItem value="newArrivals">New Arrivals</SelectItem>
+                              <SelectItem value="categories">Categories</SelectItem>
+                              <SelectItem value="testimonials">Testimonials</SelectItem>
+                              <SelectItem value="brands">Brands</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={homeSectionForm.control}
+                      name="displayOrder"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Display Order</FormLabel>
+                          <FormControl>
+                            <Input 
+                              type="number" 
+                              placeholder="0" 
+                              {...field} 
+                              onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                              data-testid="input-display-order"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={homeSectionForm.control}
+                      name="isActive"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                          <div className="space-y-0.5">
+                            <FormLabel className="text-base">Active</FormLabel>
+                            <div className="text-sm text-muted-foreground">
+                              Show this section on the home page
+                            </div>
+                          </div>
+                          <FormControl>
+                            <input
+                              type="checkbox"
+                              checked={field.value}
+                              onChange={field.onChange}
+                              data-testid="checkbox-is-active"
+                              className="h-4 w-4"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex justify-end gap-2">
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={resetHomeSectionForm}
+                        data-testid="button-cancel"
+                      >
+                        Cancel
+                      </Button>
+                      <Button 
+                        type="submit" 
+                        disabled={createHomeSectionMutation.isPending || updateHomeSectionMutation.isPending}
+                        data-testid="button-save-section"
+                      >
+                        {editingHomeSection ? "Update" : "Create"} Section
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+          </div>
+
+          <Card>
+            <CardContent className="p-6">
+              {homeSectionsLoading ? (
+                <div className="text-center py-8">Loading sections...</div>
+              ) : homeSections.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  No home sections found. Create your first section to get started.
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {homeSections
+                    .sort((a, b) => a.displayOrder - b.displayOrder)
+                    .map((section) => (
+                    <div 
+                      key={section.id} 
+                      className="flex items-center justify-between p-4 border rounded-lg"
+                      data-testid={`home-section-${section.id}`}
+                    >
+                      <div className="flex-1">
+                        <div className="flex items-center gap-4">
+                          <div>
+                            <h3 className="font-semibold" data-testid={`text-section-title-${section.id}`}>
+                              {section.title}
+                            </h3>
+                            {section.subtitle && (
+                              <p className="text-sm text-muted-foreground" data-testid={`text-section-subtitle-${section.id}`}>
+                                {section.subtitle}
+                              </p>
+                            )}
+                          </div>
+                          <Badge variant={section.isActive ? "default" : "secondary"} data-testid={`badge-section-status-${section.id}`}>
+                            {section.isActive ? "Active" : "Inactive"}
+                          </Badge>
+                          <Badge variant="outline" data-testid={`badge-section-type-${section.id}`}>
+                            {section.sectionType}
+                          </Badge>
+                          <Badge variant="outline" data-testid={`badge-section-order-${section.id}`}>
+                            Order: {section.displayOrder}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEditHomeSection(section)}
+                          data-testid={`button-edit-section-${section.id}`}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDeleteHomeSection(section.id)}
+                          className="text-red-600 hover:text-red-700"
+                          data-testid={`button-delete-section-${section.id}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
