@@ -190,76 +190,85 @@ export default function ProductDetail() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {/* Compact Product Images */}
+          {/* Product Images Gallery - Left Thumbnails + Main Image */}
           <div className="space-y-4">
-            {/* Main Image - Homepage Card Style */}
-            <div className="relative group max-w-md mx-auto lg:max-w-full">
-              <div 
-                className={`relative aspect-square rounded-xl overflow-hidden bg-gray-50 shadow-md cursor-zoom-in transition-all duration-300 ${
-                  isImageZoomed ? 'transform scale-105' : ''
-                }`}
-                onClick={() => setIsFullscreen(true)}
-                onMouseEnter={() => setIsImageZoomed(true)}
-                onMouseLeave={() => setIsImageZoomed(false)}
-              >
-                <img 
-                  src={product.images[selectedImage]} 
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-300"
-                  data-testid="main-product-image"
-                />
-                
-                {/* Zoom Indicator */}
-                <div className="absolute top-3 right-3 bg-black/60 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ZoomIn className="h-4 w-4" />
+            <div className="flex gap-4">
+              {/* Vertical Thumbnail Gallery on Left */}
+              {product.images.length > 1 && (
+                <div className="flex flex-col gap-2 w-20">
+                  {product.images.map((image, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedImage(index)}
+                      className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                        selectedImage === index 
+                          ? 'border-orange-500 ring-2 ring-orange-200 shadow-md' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                      data-testid={`product-thumbnail-${index}`}
+                    >
+                      <img src={image} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
+                    </button>
+                  ))}
                 </div>
+              )}
+              
+              {/* Main Image on Right */}
+              <div className="relative group flex-1 max-w-md mx-auto lg:max-w-full">
+                <div 
+                  className={`relative aspect-square rounded-xl overflow-hidden bg-gray-50 shadow-md cursor-zoom-in transition-all duration-300 ${
+                    isImageZoomed ? 'transform scale-105' : ''
+                  }`}
+                  onClick={() => setIsFullscreen(true)}
+                  onMouseEnter={() => setIsImageZoomed(true)}
+                  onMouseLeave={() => setIsImageZoomed(false)}
+                >
+                  <img 
+                    src={product.images[selectedImage]} 
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-300"
+                    data-testid="main-product-image"
+                  />
+                  
+                  {/* Zoom Indicator */}
+                  <div className="absolute top-3 right-3 bg-black/60 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ZoomIn className="h-4 w-4" />
+                  </div>
 
-                {/* Discount Badge */}
-                {discountPercentage > 0 && (
-                  <Badge className="absolute top-3 left-3 bg-orange-500 text-white text-sm px-3 py-1 font-semibold">
-                    -{discountPercentage}% OFF
-                  </Badge>
-                )}
+                  {/* Discount Badge */}
+                  {discountPercentage > 0 && (
+                    <Badge className="absolute top-3 left-3 bg-orange-500 text-white text-sm px-3 py-1 font-semibold">
+                      -{discountPercentage}% OFF
+                    </Badge>
+                  )}
 
-                {/* Navigation Arrows */}
-                {product.images.length > 1 && (
-                  <>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); prevImage(); }}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-200"
-                      data-testid="prev-image"
-                    >
-                      <ChevronLeft className="h-4 w-4" />
-                    </button>
-                    <button
-                      onClick={(e) => { e.stopPropagation(); nextImage(); }}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-200"
-                      data-testid="next-image"
-                    >
-                      <ChevronRight className="h-4 w-4" />
-                    </button>
-                  </>
-                )}
+                  {/* Navigation Arrows */}
+                  {product.images.length > 1 && (
+                    <>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-200"
+                        data-testid="prev-image"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-200"
+                        data-testid="next-image"
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-
-            {/* Compact Thumbnail Gallery */}
-            {product.images.length > 1 && (
-              <div className="flex gap-2 justify-center lg:justify-start overflow-x-auto pb-2">
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
-                      selectedImage === index 
-                        ? 'border-orange-500 ring-2 ring-orange-200 shadow-md' 
-                        : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                    data-testid={`product-thumbnail-${index}`}
-                  >
-                    <img src={image} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
+            
+            {/* Fallback: Horizontal thumbnails for single image or mobile */}
+            {product.images.length === 1 && (
+              <div className="text-center text-gray-500 text-sm mt-4">
+                Main product image
               </div>
             )}
           </div>
