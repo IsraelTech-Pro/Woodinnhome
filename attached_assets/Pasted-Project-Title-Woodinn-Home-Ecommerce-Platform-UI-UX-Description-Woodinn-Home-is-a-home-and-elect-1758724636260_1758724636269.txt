@@ -1,0 +1,104 @@
+Project Title: Woodinn Home – Ecommerce Platform UI/UX
+Description: Woodinn Home is a home and electrical retail company in Nsawam, Ghana. They want a modern, trustworthy, mobile-friendly ecommerce web app so that local customers can buy home goods, furniture, electrical appliances, etc., online. The UI/UX should help increase trust, make shopping fast/easy, reduce friction, and reflect local identity and values.
+
+Target Users:
+• Local residents of Nsawam / Eastern Region who may prefer in-person shopping but want convenience.
+• Users with mid-level connectivity (mobile networks) and mobile devices being a primary access point.
+• Users who may prefer “cash on delivery” or mobile money over credit cards.
+• Users not extremely tech-savvy; simplicity and clarity matter.
+
+Design Goals:
+
+Clear, appealing, trustworthy interface
+
+Fast load times, mobile responsiveness / progressive web app (PWA) support
+
+Easy navigation, finding, ordering, and paying for items
+
+Visual branding that resonates locally (culture, colours, style)
+
+Strong product presentation: photos, specs, reviews
+
+Transparent checkout & delivery information
+
+Support for “Cash on Delivery” / Mobile Money payment integration
+
+Promote community trust via social proof (reviews, testimonials)
+
+Administrative ease for Woodinn staff: product upload, inventory, order tracking, returns, customer service
+
+Key Features / Pages to Design:
+
+Home / Landing Page
+  • Hero section with featured products or promotions
+  • Category previews (Furniture, Electricals, Home Decor, etc.)
+  • Bestsellers / New Arrivals / Deals
+
+Product Listing / Category Page
+  • Filters (price, brand, size, type)
+  • Sort options
+  • Product cards with image, name, price, short spec
+
+Product Detail Page
+  • Large images + optional video
+  • Full spec (dimensions, material, power details, etc.)
+  • Price + shipping / delivery cost / time estimates
+  • Reviews & star ratings
+  • Related items / cross-sell
+
+Cart / Checkout Flow
+  • show cart summary clearly
+  • let user edit quantities, remove items
+  • multiple payment options (COD, mobile money, card)
+  • address / delivery options
+  • order confirmation with tracking info
+
+User Account / Profile
+  • Order history / status tracking
+  • Saved addresses
+  • Payment methods
+  • Wishlist / Favorites
+
+Support / Contact / FAQs
+  • easy way to contact (phone, WhatsApp, chat)
+  • FAQs especially about delivery, returns, payments
+
+Admin Dashboard (for Woodinn staff)
+  • Product management (add/edit/delete)
+  • Inventory management
+  • Order management (view, process, update status)
+  • Analytics / reports (sales by product, bestsellers, customer behaviour)
+
+Style / Branding Guidance:
+
+Colour palette: use colours that align with local aesthetic; perhaps warm earthy tones + accent colours (bright but tasteful)
+
+Typography: clear, legible, modern but friendly
+
+Imagery: high quality product photography; lifestyle images showing items in real homes (especially local settings)
+
+UI elements (buttons, cards, icons): clean design, intuitive, easy to tap on mobile
+
+Visual signals of trust: security badges, customer testimonials, verified reviews
+
+Use local motifs subtly (patterns or textures) to create connection without making design look busy.
+
+Performance & Accessibility:
+
+Ensure site loads well even on slower mobile networks
+
+Responsive design: works smoothly on phones, tablets, desktops
+
+Accessibility: readable font sizes, contrast, alt text for images, keyboard-accessible where possible
+
+Deliverables:
+
+Wireframes (mobile + desktop)
+
+High-fidelity mockups (desktop + mobile) + interactive prototype (Figma / Adobe XD / Sketch)
+
+Design system / style guide: colours, typography, spacing, components
+
+UI assets: buttons, icons, image placeholders, etc.
+
+Optional: user flow diagrams, usability test plan, suggestions for iteration based on feedback
