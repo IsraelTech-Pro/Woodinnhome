@@ -1,48 +1,13 @@
 import { Link } from "wouter";
-import { Star, ShoppingCart } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { type ProductWithCategory } from "@shared/schema";
-import { apiRequest } from "@/lib/queryClient";
-import { useAuthStore } from "@/lib/auth-store";
-import { useToast } from "@/hooks/use-toast";
-import { queryClient } from "@/lib/queryClient";
 
 interface ProductCardProps {
   product: ProductWithCategory;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { userId } = useAuthStore();
-  const { toast } = useToast();
-
-  const handleAddToCart = async (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent Link navigation
-    e.stopPropagation();
-    
-    try {
-      await apiRequest("POST", "/api/cart", {
-        userId,
-        productId: product.id,
-        quantity: 1,
-      });
-      
-      // Invalidate cart data to trigger refetch
-      queryClient.invalidateQueries({ queryKey: ["/api/cart"] });
-      
-      toast({
-        title: "Added to cart",
-        description: `${product.name} has been added to your cart.`,
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to add item to cart. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
   const formatPrice = (price: string) => {
     return `GHS ${parseFloat(price).toLocaleString()}`;
   };
@@ -125,7 +90,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
           
           {/* Price Section */}
-          <div className="mb-3">
+          <div className="mb-2">
             <div className="flex items-baseline gap-2">
               <span 
                 className="text-lg font-bold text-gray-900" 
@@ -140,18 +105,6 @@ export default function ProductCard({ product }: ProductCardProps) {
               )}
             </div>
           </div>
-          
-          {/* Add to Cart Button */}
-          <Button 
-            size="sm"
-            onClick={handleAddToCart}
-            disabled={!product.inStock}
-            className="w-full h-8 text-xs font-medium bg-orange-500 hover:bg-orange-600 text-white transition-colors"
-            data-testid={`add-to-cart-${product.id}`}
-          >
-            <ShoppingCart className="h-3 w-3 mr-2" />
-            Add to Cart
-          </Button>
         </div>
       </div>
     </Link>
