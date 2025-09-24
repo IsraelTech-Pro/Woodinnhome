@@ -18,7 +18,8 @@ Key features include:
 - Shopping cart functionality with persistent state
 - Checkout flow with multiple payment options
 - User account management and order history
-- Admin panel for product and order management
+- Admin panel for product, order, and home page section management
+- Dynamic home page sections with admin-controlled content
 - WhatsApp integration for customer support
 
 ## Backend Architecture
@@ -29,6 +30,7 @@ The storage layer is abstracted through an IStorage interface, allowing for flex
 - Product catalog with categories, reviews, and inventory
 - Shopping cart operations
 - Order processing and management
+- Dynamic home page section management
 - Administrative functions
 
 The server includes middleware for request logging, error handling, and development tools integration (Vite HMR, Replit-specific plugins).
@@ -42,6 +44,7 @@ The application uses PostgreSQL as the primary database with Drizzle ORM for typ
 - **Reviews**: Customer feedback system with ratings
 - **Cart Items**: Shopping cart persistence
 - **Orders**: Order management with items and status tracking
+- **Home Sections**: Dynamic home page sections with configurable titles, types, ordering, and activation status
 
 The database schema uses UUID primary keys and includes proper foreign key relationships. JSON fields are used for flexible data like product specifications and arrays for images and tags.
 
