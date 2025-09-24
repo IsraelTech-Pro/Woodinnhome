@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Plus, Edit, Trash2, Package, Users, BarChart3, Eye } from "lucide-react";
+import { Plus, Edit, Trash2, Package, Users, BarChart3, Eye, Upload, Camera, Link } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +26,12 @@ const productSchema = z.object({
   originalPrice: z.string().optional(),
   brand: z.string().optional(),
   categoryId: z.string().min(1, "Category is required"),
-  images: z.array(z.string().url("Please enter valid image URLs")),
+  images: z.array(
+    z.string().refine(
+      (val) => val.startsWith('http://') || val.startsWith('https://') || val.startsWith('data:image/'),
+      "Please enter valid image URLs or upload image files"
+    )
+  ),
   inStock: z.boolean(),
   quantity: z.number().min(0, "Quantity must be 0 or greater"),
   featured: z.boolean(),
@@ -41,6 +46,7 @@ export default function Admin() {
   const [editingProduct, setEditingProduct] = useState<ProductWithCategory | null>(null);
   const [imageUrl, setImageUrl] = useState("");
   const [newTag, setNewTag] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: products = [], isLoading: productsLoading } = useQuery<ProductWithCategory[]>({
     queryKey: ["/api/products"],
@@ -171,6 +177,33 @@ export default function Admin() {
   const removeImage = (index: number) => {
     const currentImages = form.getValues("images");
     form.setValue("images", currentImages.filter((_, i) => i !== index));
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      Array.from(files).forEach(file => {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const dataUrl = e.target?.result as string;
+            if (dataUrl) {
+              const currentImages = form.getValues("images");
+              form.setValue("images", [...currentImages, dataUrl]);
+            }
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+    // Reset file input
+    if (event.target) {
+      event.target.value = '';
+    }
+  };
+
+  const triggerFileUpload = () => {
+    fileInputRef.current?.click();
   };
 
   const addTag = () => {
@@ -471,25 +504,62 @@ export default function Admin() {
                       )}
                     />
 
-                    {/* Image URLs */}
-                    <div className="space-y-2">
+                    {/* Product Images */}
+                    <div className="space-y-3">
                       <Label>Product Images</Label>
-                      <div className="flex gap-2">
-                        <Input
-                          placeholder="Enter image URL"
-                          value={imageUrl}
-                          onChange={(e) => setImageUrl(e.target.value)}
-                          data-testid="image-url-input"
-                        />
-                        <Button type="button" onClick={addImageUrl} data-testid="add-image-button">
-                          Add
-                        </Button>
+                      
+                      {/* Upload Options */}
+                      <div className="space-y-3">
+                        {/* URL Input */}
+                        <div className="flex gap-2">
+                          <div className="relative flex-1">
+                            <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              placeholder="Enter image URL"
+                              value={imageUrl}
+                              onChange={(e) => setImageUrl(e.target.value)}
+                              className="pl-10"
+                              data-testid="image-url-input"
+                            />
+                          </div>
+                          <Button type="button" onClick={addImageUrl} variant="outline" data-testid="add-image-button">
+                            <Plus className="h-4 w-4 mr-1" />
+                            Add URL
+                          </Button>
+                        </div>
+                        
+                        {/* File Upload */}
+                        <div className="flex gap-2">
+                          <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileUpload}
+                            accept="image/*"
+                            multiple
+                            className="hidden"
+                            data-testid="image-file-input"
+                          />
+                          <Button 
+                            type="button" 
+                            onClick={triggerFileUpload} 
+                            variant="outline" 
+                            className="flex-1"
+                            data-testid="upload-image-button"
+                          >
+                            <Camera className="h-4 w-4 mr-2" />
+                            Upload from Device
+                          </Button>
+                        </div>
                       </div>
+                      
+                      {/* Image Preview */}
                       <div className="space-y-2">
                         {watchedImages?.map((url, index) => (
-                          <div key={index} className="flex items-center gap-2 p-2 border rounded">
-                            <img src={url} alt={`Product ${index + 1}`} className="w-16 h-16 object-cover rounded" />
-                            <span className="flex-1 text-sm truncate">{url}</span>
+                          <div key={index} className="flex items-center gap-3 p-2 border rounded-lg">
+                            <img src={url} alt={`Product ${index + 1}`} className="w-12 h-12 object-cover rounded" />
+                            <span className="flex-1 text-sm truncate font-mono text-muted-foreground">
+                              {url.startsWith('data:') ? 'Uploaded file' : url}
+                            </span>
                             <Button 
                               type="button" 
                               variant="ghost" 
@@ -497,10 +567,16 @@ export default function Admin() {
                               onClick={() => removeImage(index)}
                               data-testid={`remove-image-${index}`}
                             >
-                              Remove
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         ))}
+                        {(!watchedImages || watchedImages.length === 0) && (
+                          <div className="text-center py-6 border-2 border-dashed rounded-lg">
+                            <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
+                            <p className="text-sm text-muted-foreground">No images added yet</p>
+                          </div>
+                        )}
                       </div>
                     </div>
 
@@ -604,62 +680,64 @@ export default function Admin() {
           {/* Products List */}
           <div className="grid gap-4">
             {productsLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="animate-pulse bg-gray-200 h-64 rounded-lg"></div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+                  <div key={i} className="animate-pulse bg-gray-200 h-48 rounded-lg"></div>
                 ))}
               </div>
             ) : products.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
                 {products.map((product) => (
-                  <Card key={product.id} data-testid={`admin-product-${product.id}`}>
-                    <CardContent className="p-4">
-                      <div className="aspect-square rounded-lg overflow-hidden mb-4">
+                  <Card key={product.id} className="relative group" data-testid={`admin-product-${product.id}`}>
+                    <CardContent className="p-2">
+                      <div className="aspect-square rounded-md overflow-hidden mb-2 relative">
                         <img 
                           src={product.images[0]} 
                           alt={product.name}
                           className="w-full h-full object-cover"
                         />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <div className="flex items-start justify-between">
-                          <h3 className="font-semibold truncate">{product.name}</h3>
+                        <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <div className="flex gap-1">
                             <Button
                               size="sm"
-                              variant="ghost"
+                              variant="secondary"
                               onClick={() => handleEditProduct(product)}
+                              className="h-6 w-6 p-0"
                               data-testid={`edit-product-${product.id}`}
                             >
-                              <Edit className="h-4 w-4" />
+                              <Edit className="h-3 w-3" />
                             </Button>
                             <Button
                               size="sm"
-                              variant="ghost"
+                              variant="destructive"
                               onClick={() => handleDeleteProduct(product.id)}
-                              className="text-destructive"
+                              className="h-6 w-6 p-0"
                               data-testid={`delete-product-${product.id}`}
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-3 w-3" />
                             </Button>
                           </div>
                         </div>
+                      </div>
+                      
+                      <div className="space-y-1">
+                        <h3 className="font-medium text-xs leading-tight line-clamp-2">{product.name}</h3>
+                        {product.brand && (
+                          <p className="text-xs text-muted-foreground">{product.brand}</p>
+                        )}
+                        <p className="font-bold text-sm text-primary">{formatPrice(product.price)}</p>
                         
-                        <p className="text-sm text-muted-foreground">{product.brand}</p>
-                        <p className="font-bold text-primary">{formatPrice(product.price)}</p>
-                        
-                        <div className="flex gap-2">
-                          <Badge variant={product.inStock ? "secondary" : "destructive"}>
-                            {product.inStock ? "In Stock" : "Out of Stock"}
+                        <div className="flex gap-1 flex-wrap">
+                          <Badge variant={product.inStock ? "secondary" : "destructive"} className="text-xs px-1.5 py-0.5">
+                            {product.inStock ? "In Stock" : "Out"}
                           </Badge>
                           {product.featured && (
-                            <Badge variant="outline">Featured</Badge>
+                            <Badge variant="outline" className="text-xs px-1.5 py-0.5">Featured</Badge>
                           )}
                         </div>
                         
-                        <p className="text-sm text-muted-foreground">
-                          Quantity: {product.quantity}
+                        <p className="text-xs text-muted-foreground">
+                          Qty: {product.quantity}
                         </p>
                       </div>
                     </CardContent>

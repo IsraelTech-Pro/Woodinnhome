@@ -2,12 +2,12 @@ import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Shield, Truck, Phone, Star, Smartphone, Banknote, CreditCard, ChevronLeft, ChevronRight, Flame, TrendingUp, Sparkles, Clock } from "lucide-react";
+import { Shield, Truck, Phone, Star, Smartphone, Banknote, CreditCard, ChevronLeft, ChevronRight, Flame, TrendingUp, Sparkles, Clock, ArrowRight } from "lucide-react";
 import ProductCard from "@/components/product-card";
 import CategoryCard from "@/components/category-card";
 import { Sofa, Tv, Palette, Zap } from "lucide-react";
 import { type ProductWithCategory, type Category } from "@shared/schema";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import type { LucideIcon } from "lucide-react";
 
 // Horizontal scrolling product section component
@@ -115,7 +115,7 @@ function HorizontalProductSection({
           {/* Products Container */}
           <div
             ref={scrollRef}
-            className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-smooth"
+            className="flex gap-3 overflow-x-auto scrollbar-hide pb-4 scroll-smooth"
             style={{ 
               scrollbarWidth: 'none', 
               msOverflowStyle: 'none',
@@ -127,12 +127,166 @@ function HorizontalProductSection({
             {products.map((product) => (
               <div 
                 key={product.id} 
-                className="flex-shrink-0 w-64 md:w-72 min-w-64 md:min-w-72"
+                className="flex-shrink-0 w-40 md:w-44 min-w-40 md:min-w-44"
                 data-testid={`${sectionId}-product-${product.id}`}
               >
                 <ProductCard product={product} />
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Jumia-style Hero Section with Slideshow
+function JumiaHero() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // Sample promotional banners - in real app, these would come from API/admin
+  const banners = [
+    {
+      id: 1,
+      title: "Furniture Sale",
+      subtitle: "Up to 45% OFF",
+      description: "Transform your home with premium furniture",
+      buttonText: "Shop Now",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+      bgColor: "from-blue-600 to-purple-600",
+      link: "/products/furniture"
+    },
+    {
+      id: 2,
+      title: "Electronics Wednesday",
+      subtitle: "Up to 30% OFF",
+      description: "Latest smartphones, TVs & appliances",
+      buttonText: "Shop Electronics",
+      image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400",
+      bgColor: "from-purple-600 to-pink-600",
+      link: "/products/electronics"
+    }
+  ];
+
+  const { data: categories = [] } = useQuery<Category[]>({
+    queryKey: ["/api/categories"],
+  });
+
+  // Auto-advance slideshow
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % banners.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [banners.length]);
+
+  return (
+    <section className="bg-gray-50 py-4">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          {/* Left Sidebar - Categories */}
+          <div className="lg:col-span-1">
+            <Card className="p-4">
+              <h3 className="font-semibold mb-3 text-sm">Categories</h3>
+              <div className="space-y-2">
+                {categories.map((category) => (
+                  <Link
+                    key={category.id}
+                    href={`/products/${category.slug}`}
+                    className="block text-sm text-gray-600 hover:text-primary transition-colors py-1"
+                    data-testid={`hero-category-${category.slug}`}
+                  >
+                    {category.name}
+                  </Link>
+                ))}
+                <Link
+                  href="/products"
+                  className="block text-sm text-gray-600 hover:text-primary transition-colors py-1 font-medium"
+                  data-testid="hero-category-all"
+                >
+                  All Products
+                </Link>
+              </div>
+            </Card>
+          </div>
+
+          {/* Center - Main Slideshow */}
+          <div className="lg:col-span-2">
+            <div className="relative h-64 lg:h-80 rounded-lg overflow-hidden">
+              {banners.map((banner, index) => (
+                <div
+                  key={banner.id}
+                  className={`absolute inset-0 transition-opacity duration-500 ${
+                    index === currentSlide ? 'opacity-100' : 'opacity-0'
+                  }`}
+                >
+                  <div className={`h-full bg-gradient-to-r ${banner.bgColor} flex items-center relative overflow-hidden`}>
+                    <div className="flex-1 p-6 lg:p-8 text-white z-10">
+                      <h2 className="text-2xl lg:text-3xl font-bold mb-2" data-testid={`hero-banner-title-${banner.id}`}>
+                        {banner.title}
+                      </h2>
+                      <p className="text-lg lg:text-xl font-semibold mb-2 text-yellow-200" data-testid={`hero-banner-subtitle-${banner.id}`}>
+                        {banner.subtitle}
+                      </p>
+                      <p className="text-sm mb-4 opacity-90" data-testid={`hero-banner-description-${banner.id}`}>
+                        {banner.description}
+                      </p>
+                      <Link href={banner.link}>
+                        <Button 
+                          size="sm" 
+                          className="bg-white text-gray-900 hover:bg-gray-100 font-semibold"
+                          data-testid={`hero-banner-button-${banner.id}`}
+                        >
+                          {banner.buttonText}
+                        </Button>
+                      </Link>
+                    </div>
+                    <div className="flex-1 relative">
+                      <img 
+                        src={banner.image} 
+                        alt={banner.title}
+                        className="absolute right-0 top-0 w-full h-full object-cover opacity-20 lg:opacity-40"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {/* Slide Indicators */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                {banners.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`w-3 h-3 rounded-full transition-colors ${
+                      index === currentSlide ? 'bg-white' : 'bg-white/50'
+                    }`}
+                    onClick={() => setCurrentSlide(index)}
+                    data-testid={`hero-slide-indicator-${index}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Sidebar - Services */}
+          <div className="lg:col-span-1 space-y-4">
+            <Card className="p-4 text-center">
+              <Truck className="h-8 w-8 text-primary mx-auto mb-2" />
+              <h4 className="font-semibold text-sm">WOODINN DELIVERY</h4>
+              <p className="text-xs text-gray-600">Send parcels easily</p>
+            </Card>
+            
+            <Card className="p-4 text-center">
+              <Smartphone className="h-8 w-8 text-primary mx-auto mb-2" />
+              <h4 className="font-semibold text-sm">SELL ON WOODINN</h4>
+              <p className="text-xs text-gray-600">Make more money</p>
+            </Card>
+            
+            <Card className="p-4 text-center bg-primary text-white">
+              <Shield className="h-8 w-8 text-white mx-auto mb-2" />
+              <h4 className="font-semibold text-sm">HOME STORE LOVER</h4>
+              <p className="text-xs opacity-90">UP TO 45% OFF</p>
+            </Card>
           </div>
         </div>
       </div>
@@ -169,85 +323,8 @@ export default function Home() {
 
   return (
     <div>
-      {/* Hero Section */}
-      <section className="hero-gradient text-white overflow-hidden">
-        <div className="container mx-auto px-4 py-12 md:py-20">
-          <div className="flex flex-col lg:flex-row items-center gap-8">
-            <div className="flex-1 text-center lg:text-left">
-              <h2 className="text-3xl md:text-5xl font-bold mb-4" data-testid="hero-title">
-                Quality Home & Electrical Goods
-              </h2>
-              <p className="text-lg md:text-xl opacity-90 mb-6" data-testid="hero-description">
-                Trusted by Nsawam families for over 10 years. Shop furniture, electronics, and home essentials with fast delivery.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Link href="/products">
-                  <Button 
-                    size="lg" 
-                    className="bg-white text-primary font-semibold hover:bg-gray-100"
-                    data-testid="hero-shop-now"
-                  >
-                    Shop Now
-                  </Button>
-                </Link>
-                <Button 
-                  variant="outline" 
-                  size="lg"
-                  className="border-2 border-white text-white font-semibold hover:bg-white hover:text-primary"
-                  onClick={() => window.open('https://wa.me/233000000000', '_blank')}
-                  data-testid="hero-whatsapp"
-                >
-                  WhatsApp Us
-                </Button>
-              </div>
-            </div>
-            <div className="flex-1 relative">
-              <img 
-                src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
-                alt="Modern living room with electrical appliances and furniture" 
-                className="rounded-xl shadow-2xl w-full h-auto" 
-              />
-              <div className="absolute top-4 right-4 bg-accent text-accent-foreground px-4 py-2 rounded-full font-semibold text-sm">
-                Free Delivery in Nsawam
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Quick Categories */}
-      <section className="py-8 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <h3 className="text-2xl font-bold text-center mb-8" data-testid="categories-title">
-            Shop by Category
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {categories.map((category) => {
-              const IconComponent = categoryIcons[category.slug as keyof typeof categoryIcons] || Sofa;
-              return (
-                <CategoryCard
-                  key={category.id}
-                  name={category.name}
-                  description={category.description || ""}
-                  slug={category.slug}
-                  icon={IconComponent}
-                />
-              );
-            })}
-            
-            {/* Special Deals Category */}
-            <Link href="/products?featured=true">
-              <button className="bg-card hover:shadow-lg transition-shadow rounded-xl p-6 text-center group w-full" data-testid="category-deals">
-                <div className="w-16 h-16 mx-auto mb-4 category-icon-bg rounded-full flex items-center justify-center group-hover:category-icon-bg transition-colors">
-                  <Star className="h-8 w-8 text-primary" />
-                </div>
-                <h4 className="font-semibold text-card-foreground">Best Deals</h4>
-                <p className="text-sm text-muted-foreground">Special Offers</p>
-              </button>
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* Jumia-style Hero Section */}
+      <JumiaHero />
 
       {/* Flash Sales Section */}
       <HorizontalProductSection
