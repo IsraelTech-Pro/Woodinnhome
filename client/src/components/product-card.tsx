@@ -23,8 +23,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-orange-300 group cursor-pointer" 
         data-testid={`product-card-${product.id}`}
       >
-        {/* Product Image - Compact */}
-        <div className="relative aspect-square bg-gray-100">
+        {/* Product Image - Fixed Height */}
+        <div className="relative h-[100px] bg-gray-100">
           <img 
             src={product.images[0]} 
             alt={product.name} 
@@ -46,19 +46,19 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {/* Compact Product Info */}
-        <div className="p-2">
-          {/* Product Name - Ultra Compact */}
+        {/* Ultra Compact Product Info */}
+        <div className="px-1.5 py-1">
+          {/* Product Name - Readable but Compact */}
           <h4 
-            className="font-medium text-xs text-gray-800 mb-1 line-clamp-2 leading-tight" 
+            className="font-normal text-xs text-gray-800 line-clamp-2 leading-[14px] mb-1" 
             data-testid={`product-name-${product.id}`}
             title={product.name}
           >
             {product.name}
           </h4>
           
-          {/* Price Section - Simple Layout */}
-          <div className="flex items-center gap-2 mt-1">
+          {/* Price Section - Compact */}
+          <div className="flex items-center gap-1.5">
             <span 
               className="text-sm font-bold text-gray-900" 
               data-testid={`product-price-${product.id}`}
@@ -66,7 +66,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               {formatPrice(product.price)}
             </span>
             {product.originalPrice && (
-              <span className="text-xs text-gray-400 line-through">
+              <span className="text-xs text-gray-400 line-through" data-testid={`product-original-price-${product.id}`}>
                 {formatPrice(product.originalPrice)}
               </span>
             )}
