@@ -6,7 +6,8 @@ import {
   insertCategorySchema, 
   insertCartItemSchema,
   insertOrderSchema,
-  insertReviewSchema
+  insertReviewSchema,
+  insertHomeSectionSchema
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -285,6 +286,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(order);
     } catch (error) {
       res.status(500).json({ error: "Failed to update order status" });
+    }
+  });
+
+  // Home Sections (Admin only)
+  app.get("/api/home-sections", async (req, res) => {
+    try {
+      const sections = await storage.getHomeSections();
+      res.json(sections);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch home sections" });
+    }
+  });
+
+  app.get("/api/home-sections/:id", async (req, res) => {
+    try {
+      const section = await storage.getHomeSection(req.params.id);
+      if (!section) {
+        return res.status(404).json({ error: "Home section not found" });
+      }
+      res.json(section);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch home section" });
+    }
+  });
+
+  app.post("/api/home-sections", async (req, res) => {
+    try {
+      const validData = insertHomeSectionSchema.parse(req.body);
+      const section = await storage.createHomeSection(validData);
+      res.status(201).json(section);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid home section data" });
+    }
+  });
+
+  app.put("/api/home-sections/:id", async (req, res) => {
+    try {
+      const validData = insertHomeSectionSchema.partial().parse(req.body);
+      const section = await storage.updateHomeSection(req.params.id, validData);
+      if (!section) {
+        return res.status(404).json({ error: "Home section not found" });
+      }
+      res.json(section);
+    } catch (error) {
+      res.status(400).json({ error: "Invalid home section data" });
+    }
+  });
+
+  app.delete("/api/home-sections/:id", async (req, res) => {
+    try {
+      const success = await storage.deleteHomeSection(req.params.id);
+      if (!success) {
+        return res.status(404).json({ error: "Home section not found" });
+      }
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete home section" });
     }
   });
 

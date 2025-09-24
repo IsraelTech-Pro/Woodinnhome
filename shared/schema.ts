@@ -85,6 +85,18 @@ export const orderItems = pgTable("order_items", {
   productImage: text("product_image"),
 });
 
+export const homeSections = pgTable("home_sections", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  subtitle: text("subtitle"),
+  sectionType: text("section_type").notNull(), // 'product_horizontal', 'banner', 'text_block'
+  isActive: boolean("is_active").default(true).notNull(),
+  displayOrder: integer("display_order").notNull(),
+  config: jsonb("config").notNull(), // stores configuration like bgColor, textColor, icon, etc.
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -119,6 +131,12 @@ export const insertOrderItemSchema = createInsertSchema(orderItems).omit({
   id: true,
 });
 
+export const insertHomeSectionSchema = createInsertSchema(homeSections).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -140,6 +158,9 @@ export type InsertOrder = z.infer<typeof insertOrderSchema>;
 
 export type OrderItem = typeof orderItems.$inferSelect;
 export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
+
+export type HomeSection = typeof homeSections.$inferSelect;
+export type InsertHomeSection = z.infer<typeof insertHomeSectionSchema>;
 
 // Extended types for API responses
 export type ProductWithCategory = Product & {
@@ -214,4 +235,8 @@ export const orderItemsRelations = relations(orderItems, ({ one }) => ({
     fields: [orderItems.productId],
     references: [products.id],
   }),
+}));
+
+export const homeSectionsRelations = relations(homeSections, ({ one }) => ({
+  // Add relations if needed in the future
 }));

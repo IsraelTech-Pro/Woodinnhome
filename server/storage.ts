@@ -16,13 +16,16 @@ import {
   type OrderItem,
   type InsertOrderItem,
   type OrderWithItems,
+  type HomeSection,
+  type InsertHomeSection,
   users,
   categories,
   products,
   reviews,
   cartItems,
   orders,
-  orderItems
+  orderItems,
+  homeSections
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
@@ -64,6 +67,13 @@ export interface IStorage {
   getOrder(id: string): Promise<OrderWithItems | undefined>;
   createOrder(order: InsertOrder, items: InsertOrderItem[]): Promise<Order>;
   updateOrderStatus(id: string, status: string): Promise<Order | undefined>;
+
+  // Home Sections
+  getHomeSections(): Promise<HomeSection[]>;
+  getHomeSection(id: string): Promise<HomeSection | undefined>;
+  createHomeSection(section: InsertHomeSection): Promise<HomeSection>;
+  updateHomeSection(id: string, updates: Partial<InsertHomeSection>): Promise<HomeSection | undefined>;
+  deleteHomeSection(id: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {
@@ -74,6 +84,7 @@ export class MemStorage implements IStorage {
   private cartItems: Map<string, CartItem> = new Map();
   private orders: Map<string, Order> = new Map();
   private orderItems: Map<string, OrderItem> = new Map();
+  private homeSections: Map<string, HomeSection> = new Map();
 
   constructor() {
     this.seedData();
@@ -489,6 +500,49 @@ export class MemStorage implements IStorage {
     this.orders.set(id, order);
     return order;
   }
+
+  // Home Sections
+  async getHomeSections(): Promise<HomeSection[]> {
+    return Array.from(this.homeSections.values())
+      .sort((a, b) => a.displayOrder - b.displayOrder)
+      .filter(section => section.isActive);
+  }
+
+  async getHomeSection(id: string): Promise<HomeSection | undefined> {
+    return this.homeSections.get(id);
+  }
+
+  async createHomeSection(insertSection: InsertHomeSection): Promise<HomeSection> {
+    const sectionId = randomUUID();
+    const now = new Date();
+    const section: HomeSection = { 
+      ...insertSection, 
+      id: sectionId, 
+      subtitle: insertSection.subtitle || null,
+      isActive: insertSection.isActive ?? true,
+      createdAt: now,
+      updatedAt: now
+    };
+    this.homeSections.set(sectionId, section);
+    return section;
+  }
+
+  async updateHomeSection(id: string, updates: Partial<InsertHomeSection>): Promise<HomeSection | undefined> {
+    const section = this.homeSections.get(id);
+    if (!section) return undefined;
+
+    const updatedSection = { 
+      ...section, 
+      ...updates, 
+      updatedAt: new Date() 
+    };
+    this.homeSections.set(id, updatedSection);
+    return updatedSection;
+  }
+
+  async deleteHomeSection(id: string): Promise<boolean> {
+    return this.homeSections.delete(id);
+  }
 }
 
 export class DatabaseStorage implements IStorage {
@@ -738,6 +792,39 @@ export class DatabaseStorage implements IStorage {
       .where(eq(orders.id, id))
       .returning();
     return order || undefined;
+  }
+
+  // Home Sections
+  async getHomeSections(): Promise<HomeSection[]> {
+    return await db
+      .select()
+      .from(homeSections)
+      .where(eq(homeSections.isActive, true))
+      .orderBy(homeSections.displayOrder);
+  }
+
+  async getHomeSection(id: string): Promise<HomeSection | undefined> {
+    const [section] = await db.select().from(homeSections).where(eq(homeSections.id, id));
+    return section || undefined;
+  }
+
+  async createHomeSection(insertSection: InsertHomeSection): Promise<HomeSection> {
+    const [section] = await db.insert(homeSections).values(insertSection).returning();
+    return section;
+  }
+
+  async updateHomeSection(id: string, updates: Partial<InsertHomeSection>): Promise<HomeSection | undefined> {
+    const [section] = await db
+      .update(homeSections)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(homeSections.id, id))
+      .returning();
+    return section || undefined;
+  }
+
+  async deleteHomeSection(id: string): Promise<boolean> {
+    const result = await db.delete(homeSections).where(eq(homeSections.id, id));
+    return (result.rowCount || 0) > 0;
   }
 }
 

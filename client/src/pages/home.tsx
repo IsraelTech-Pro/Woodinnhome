@@ -350,44 +350,16 @@ export default function Home() {
       )}
 
       {/* Flash Deals Section */}
-      <section className="py-6 bg-gradient-to-r from-red-500 to-orange-600">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <Timer className="h-8 w-8 text-white" />
-              <div>
-                <h2 className="text-2xl font-bold text-white" data-testid="flash-deals-title">
-                  Flash Deals
-                </h2>
-                <p className="text-white/80" data-testid="flash-deals-subtitle">
-                  Limited time offers
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-lg">
-              <Clock className="h-5 w-5 text-white" />
-              <span className="text-white font-mono text-lg" data-testid="flash-deals-countdown">
-                02:15:33
-              </span>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {bestSellersProducts.slice(0, 4).map((product, index) => (
-              <Card key={product.id} className="p-4 bg-white/10 backdrop-blur-sm border-white/20" data-testid={`flash-deal-${product.id}`}>
-                <div className="text-center">
-                  <img src={product.images[0]} alt={product.name} className="w-16 h-16 mx-auto mb-2 rounded-lg object-cover" />
-                  <h4 className="text-white font-semibold text-sm mb-1">{product.name}</h4>
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="text-white font-bold">{`GHS ${parseFloat(product.price).toLocaleString()}`}</span>
-                    <Badge className="bg-yellow-400 text-black text-xs">-{20 + index * 5}%</Badge>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+      <HorizontalProductSection
+        title="Flash Deals"
+        subtitle="Limited time offers - Don't miss out!"
+        products={bestSellersProducts.slice(0, 8)}
+        icon={Timer}
+        bgColor="bg-gradient-to-r from-red-500 to-orange-600"
+        textColor="text-white"
+        timeLeft="02:15:33"
+        sectionId="flash-deals"
+      />
 
       {/* Trust & Security Section */}
       <section className="py-8 bg-gray-50">
