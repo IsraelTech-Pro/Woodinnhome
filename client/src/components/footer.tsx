@@ -1,36 +1,118 @@
 import { Link } from "wouter";
 import { MapPin, Phone, Mail, Download, CreditCard, Smartphone, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 export default function Footer() {
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  const handleSubscribe = () => {
+    if (phoneNumber) {
+      // Handle newsletter subscription
+      window.open(`https://wa.me/233000000000?text=Hi! I'd like to subscribe to Woodinn deals and updates. My number is ${phoneNumber}`, '_blank');
+      setPhoneNumber("");
+    }
+  };
+
   return (
     <footer className="bg-gray-800 text-white">
-      {/* Newsletter Section - Top Banner */}
-      <div className="bg-gradient-to-r from-orange-500 to-red-600 py-4">
+      {/* Statistics Section */}
+      <div className="bg-gradient-to-r from-orange-500 to-red-600 py-8">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="text-center md:text-left">
-              <h3 className="font-bold text-lg text-white">NEW TO WOODINN HOME?</h3>
-              <p className="text-white/90 text-sm">Subscribe to our newsletter to get updates on our latest offers!</p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-white">
+            <div data-testid="stat-customers">
+              <div className="text-3xl md:text-4xl font-bold">5,000+</div>
+              <div className="text-sm md:text-base opacity-90">Happy Customers</div>
             </div>
-            <div className="flex items-center gap-2">
-              <input 
-                type="checkbox" 
-                id="agree-terms" 
-                className="w-4 h-4"
+            <div data-testid="stat-products">
+              <div className="text-3xl md:text-4xl font-bold">1,200+</div>
+              <div className="text-sm md:text-base opacity-90">Quality Products</div>
+            </div>
+            <div data-testid="stat-experience">
+              <div className="text-3xl md:text-4xl font-bold">15+</div>
+              <div className="text-sm md:text-base opacity-90">Years Experience</div>
+            </div>
+            <div data-testid="stat-delivery">
+              <div className="text-3xl md:text-4xl font-bold">98%</div>
+              <div className="text-sm md:text-base opacity-90">On-Time Delivery</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Newsletter Section */}
+      <div className="bg-gradient-to-r from-red-500 to-red-600 py-12">
+        <div className="container mx-auto px-4 text-center">
+          <div className="mb-6">
+            <Mail className="h-12 w-12 mx-auto mb-4 text-white" />
+            <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">Stay Updated with Latest Deals</h3>
+            <p className="text-white/90 text-sm md:text-base max-w-2xl mx-auto">
+              Get exclusive offers, new arrivals, and special discounts delivered to your phone via WhatsApp
+            </p>
+          </div>
+          
+          <div className="max-w-md mx-auto mb-4">
+            <div className="flex gap-2">
+              <Input
+                type="tel"
+                placeholder="Enter your phone number"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="flex-1 bg-white text-black placeholder:text-gray-500"
+                data-testid="newsletter-phone-input"
               />
-              <label htmlFor="agree-terms" className="text-white/90 text-xs">
-                I agree to Woodinn's Privacy and Cookie Policy. You can unsubscribe from newsletters at any time.
-              </label>
+              <Button 
+                onClick={handleSubscribe}
+                className="bg-white text-red-600 hover:bg-gray-100 font-semibold px-6"
+                data-testid="newsletter-subscribe-btn"
+              >
+                Subscribe
+              </Button>
             </div>
-            <div className="bg-gradient-to-r from-orange-600 to-red-700 p-4 rounded-lg">
-              <h4 className="font-bold text-white mb-2">DOWNLOAD WOODINN FREE APP</h4>
-              <p className="text-white/90 text-sm mb-3">Get access to exclusive offers!</p>
-              <div className="flex gap-2">
-                <Button className="bg-black text-white hover:bg-gray-800 text-xs px-3 py-1 h-8" data-testid="download-app-store">
+          </div>
+          
+          <p className="text-white/80 text-xs">
+            We respect your privacy. No spam, unsubscribe anytime.
+          </p>
+        </div>
+      </div>
+
+      {/* App Download Section */}
+      <div className="bg-gradient-to-r from-orange-600 to-red-700 py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="text-center md:text-left">
+              <h3 className="font-bold text-lg text-white mb-1">NEW TO WOODINN HOME?</h3>
+              <p className="text-white/90 text-sm">Subscribe to our newsletter to get updates on our latest offers!</p>
+              <div className="flex items-center gap-2 mt-3">
+                <input 
+                  type="checkbox" 
+                  id="agree-terms" 
+                  className="w-4 h-4"
+                />
+                <label htmlFor="agree-terms" className="text-white/90 text-xs">
+                  I agree to Woodinn's Privacy and Cookie Policy. You can unsubscribe from newsletters at any time.
+                </label>
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <h4 className="font-bold text-white text-xl mb-2">DOWNLOAD WOODINN FREE APP</h4>
+              <p className="text-white/90 text-sm mb-4">Get access to exclusive offers!</p>
+              <div className="flex gap-3 justify-center">
+                <Button 
+                  className="bg-black text-white hover:bg-gray-800 px-4 py-2 h-10 text-sm font-medium"
+                  onClick={() => window.open('#', '_blank')}
+                  data-testid="download-app-store"
+                >
                   📱 App Store
                 </Button>
-                <Button className="bg-black text-white hover:bg-gray-800 text-xs px-3 py-1 h-8" data-testid="download-play-store">
+                <Button 
+                  className="bg-black text-white hover:bg-gray-800 px-4 py-2 h-10 text-sm font-medium"
+                  onClick={() => window.open('#', '_blank')}
+                  data-testid="download-play-store"
+                >
                   📱 Google Play
                 </Button>
               </div>
@@ -146,7 +228,7 @@ export default function Footer() {
         {/* Contact Info Bar */}
         <div className="border-t border-gray-700 mt-6 pt-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-6 text-sm">
+            <div className="flex flex-col md:flex-row items-center gap-6 text-sm">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-orange-400" />
                 <span className="text-gray-300">Opposite Police Station, Nsawam, Eastern Region</span>
