@@ -108,7 +108,7 @@ function HorizontalProductSection({
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="border-white/30 text-current hover:bg-white/10"
+                  className="bg-white text-gray-800 border-white hover:bg-gray-100 font-semibold"
                   data-testid={`${sectionId}-see-all`}
                 >
                   See All
