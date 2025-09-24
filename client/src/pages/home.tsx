@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Shield, Truck, Phone, Star, Smartphone, Banknote, CreditCard, ChevronLeft, ChevronRight, Flame, TrendingUp, Sparkles, Clock, ArrowRight } from "lucide-react";
+import { Shield, Truck, Phone, Star, Smartphone, Banknote, CreditCard, ChevronLeft, ChevronRight, TrendingUp, Sparkles, Clock, ArrowRight } from "lucide-react";
 import ProductCard from "@/components/product-card";
 import CategoryCard from "@/components/category-card";
 import { Sofa, Tv, Palette, Zap } from "lucide-react";
@@ -310,9 +310,9 @@ export default function Home() {
   });
 
   // Create different product sections
-  const flashSaleProducts = allProducts.slice(0, 8);
+  const newArrivalsProducts = allProducts.slice(0, 8);
   const bestSellersProducts = allProducts.slice(2, 10);
-  const newArrivalsProducts = allProducts.slice(1, 9);
+  const featuredProducts_alt = allProducts.slice(1, 9);
   const electronicsProducts = allProducts.filter(p => p.category?.slug === 'electronics').slice(0, 8);
   const furnitureProducts = allProducts.filter(p => p.category?.slug === 'furniture').slice(0, 8);
 
@@ -328,16 +328,15 @@ export default function Home() {
       {/* Jumia-style Hero Section */}
       <JumiaHero />
 
-      {/* Flash Sales Section */}
+      {/* New Arrivals Section */}
       <HorizontalProductSection
-        title="Flash Sales"
-        subtitle="Limited time offers"
-        products={flashSaleProducts}
-        icon={Flame}
-        bgColor="bg-red-500"
+        title="New Arrivals"
+        subtitle="Latest additions to our store"
+        products={newArrivalsProducts}
+        icon={Sparkles}
+        bgColor="bg-orange-500"
         textColor="text-white"
-        timeLeft="02h : 35m : 40s"
-        sectionId="flash-sales"
+        sectionId="new-arrivals"
       />
 
       {/* Featured Products Section */}
@@ -380,14 +379,6 @@ export default function Home() {
         />
       )}
 
-      {/* New Arrivals Section */}
-      <HorizontalProductSection
-        title="New Arrivals"
-        subtitle="Latest additions to our store"
-        products={newArrivalsProducts}
-        icon={Sparkles}
-        sectionId="new-arrivals"
-      />
 
       {/* Trust Signals */}
       <section className="py-12 bg-muted/30">
