@@ -1,18 +1,45 @@
 import { Link } from "wouter";
 import { MapPin, Phone, Mail, CreditCard, CheckCircle } from "lucide-react";
+import woodinnLogo from "@assets/Screenshot_2025-09-24_234230-removebg-preview_1758754088474.png";
 
 export default function Footer() {
   return (
     <footer className="bg-gray-800 text-white">
+      {/* Logo and Company Info Section */}
+      <div className="container mx-auto px-4 py-6 border-b border-gray-700">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <img 
+              src={woodinnLogo} 
+              alt="Woodinn Home Logo" 
+              className="h-12 w-auto"
+              data-testid="company-logo"
+            />
+            <div>
+              <h3 className="text-xl font-bold text-white">Woodinn Home</h3>
+              <p className="text-sm text-gray-300">Your Trusted Home & Electrical Store</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Main Footer Content - Compact Horizontal Layout */}
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-6 text-sm">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
           
           {/* Need Help Column */}
           <div>
             <h5 className="font-bold text-white mb-3 text-sm">NEED HELP?</h5>
             <ul className="space-y-1">
-              <li><a href="#contact" className="text-gray-300 hover:text-orange-400 transition-colors" data-testid="footer-contact">Chat with us</a></li>
+              <li>
+                <button 
+                  className="text-gray-300 hover:text-orange-400 transition-colors"
+                  onClick={() => window.open('https://wa.me/23324930283?text=Hi! I need help with my order.', '_blank')}
+                  data-testid="footer-contact"
+                >
+                  Chat with us
+                </button>
+              </li>
               <li><a href="#help" className="text-gray-300 hover:text-orange-400 transition-colors">Help Center</a></li>
               <li><a href="#contact" className="text-gray-300 hover:text-orange-400 transition-colors">Contact Us</a></li>
             </ul>
@@ -20,10 +47,10 @@ export default function Footer() {
 
           {/* About Woodinn Column */}
           <div>
-            <h5 className="font-bold text-white mb-3 text-sm">ABOUT WOODINN GHANA</h5>
+            <h5 className="font-bold text-white mb-3 text-sm">ABOUT WOODINN HOME</h5>
             <ul className="space-y-1">
               <li><a href="#about" className="text-gray-300 hover:text-orange-400 transition-colors">About us</a></li>
-              <li><a href="#careers" className="text-gray-300 hover:text-orange-400 transition-colors">Woodinn careers</a></li>
+              <li><a href="#careers" className="text-gray-300 hover:text-orange-400 transition-colors">Careers</a></li>
               <li><a href="#terms" className="text-gray-300 hover:text-orange-400 transition-colors" data-testid="footer-terms">Terms and Conditions</a></li>
               <li><a href="#privacy" className="text-gray-300 hover:text-orange-400 transition-colors" data-testid="footer-privacy">Privacy Notice</a></li>
               <li><a href="#cookies" className="text-gray-300 hover:text-orange-400 transition-colors">Cookie Notice</a></li>
@@ -31,43 +58,13 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Make Money Column */}
-          <div>
-            <h5 className="font-bold text-white mb-3 text-sm">MAKE MONEY WITH WOODINN</h5>
-            <ul className="space-y-1">
-              <li><a href="#sell" className="text-gray-300 hover:text-orange-400 transition-colors">Sell on Woodinn</a></li>
-              <li><a href="#vendor" className="text-gray-300 hover:text-orange-400 transition-colors">Vendor Hub</a></li>
-              <li><a href="#delivery" className="text-gray-300 hover:text-orange-400 transition-colors" data-testid="footer-delivery">Delivery Service</a></li>
-              <li><a href="#consultant" className="text-gray-300 hover:text-orange-400 transition-colors">Become a Sales Consultant</a></li>
-            </ul>
-          </div>
-
-          {/* Woodinn International Column */}
-          <div>
-            <h5 className="font-bold text-white mb-3 text-sm">WOODINN INTERNATIONAL</h5>
-            <div className="grid grid-cols-2 gap-1 text-xs">
-              <div className="space-y-1">
-                <div><a href="#algeria" className="text-gray-300 hover:text-orange-400 transition-colors">Algeria</a></div>
-                <div><a href="#cote-divoire" className="text-gray-300 hover:text-orange-400 transition-colors">Côte d'Ivoire</a></div>
-                <div><a href="#egypt" className="text-gray-300 hover:text-orange-400 transition-colors">Egypt</a></div>
-                <div><a href="#kenya" className="text-gray-300 hover:text-orange-400 transition-colors">Kenya</a></div>
-              </div>
-              <div className="space-y-1">
-                <div><a href="#morocco" className="text-gray-300 hover:text-orange-400 transition-colors">Morocco</a></div>
-                <div><a href="#nigeria" className="text-gray-300 hover:text-orange-400 transition-colors">Nigeria</a></div>
-                <div><a href="#senegal" className="text-gray-300 hover:text-orange-400 transition-colors">Senegal</a></div>
-                <div><a href="#uganda" className="text-gray-300 hover:text-orange-400 transition-colors">Uganda</a></div>
-              </div>
-            </div>
-          </div>
-
           {/* Join Our Community Column */}
           <div>
-            <h5 className="font-bold text-white mb-3 text-sm">JOIN US ON</h5>
+            <h5 className="font-bold text-white mb-3 text-sm">FOLLOW US</h5>
             <div className="space-y-2">
               <button 
                 className="flex items-center gap-2 text-gray-300 hover:text-orange-400 transition-colors"
-                onClick={() => window.open('https://facebook.com', '_blank')}
+                onClick={() => window.open('https://web.facebook.com/people/Woodinn-Home/100093112969481/', '_blank')}
                 data-testid="facebook-link"
               >
                 <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -77,7 +74,17 @@ export default function Footer() {
               </button>
               <button 
                 className="flex items-center gap-2 text-gray-300 hover:text-orange-400 transition-colors"
-                onClick={() => window.open('https://wa.me/233000000000', '_blank')}
+                onClick={() => window.open('https://www.instagram.com/woodinnhome/', '_blank')}
+                data-testid="instagram-link"
+              >
+                <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+                <span className="text-xs">Instagram</span>
+              </button>
+              <button 
+                className="flex items-center gap-2 text-gray-300 hover:text-orange-400 transition-colors"
+                onClick={() => window.open('https://wa.me/23324930283', '_blank')}
                 data-testid="whatsapp-link"
               >
                 <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -118,11 +125,11 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-orange-400" />
-                <span className="text-gray-300" data-testid="contact-phone">+233 XX XXX XXXX</span>
+                <span className="text-gray-300" data-testid="contact-phone">055 283 8366</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-orange-400" />
-                <span className="text-gray-300" data-testid="contact-email">info@woodinnhome.com</span>
+                <span className="text-gray-300" data-testid="contact-email">Woodinnhome@gmail.com</span>
               </div>
             </div>
             <div className="text-sm text-gray-400">
