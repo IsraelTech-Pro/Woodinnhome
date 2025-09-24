@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, TrendingUp, Sparkles, Clock, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, TrendingUp, Sparkles, Clock, ArrowRight, Truck, Smartphone, Shield, Star } from "lucide-react";
 import ProductCard from "@/components/product-card";
 import CategoryCard from "@/components/category-card";
 import { Sofa, Tv, Palette, Zap } from "lucide-react";
