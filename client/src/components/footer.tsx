@@ -18,7 +18,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-800 text-white">
       {/* Statistics Section */}
-      <div className="bg-gradient-to-r from-orange-500 to-red-600 py-8">
+      <div className="bg-gradient-to-r from-orange-500 to-red-500 py-8">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-white">
             <div data-testid="stat-customers">
@@ -42,7 +42,7 @@ export default function Footer() {
       </div>
 
       {/* Newsletter Section */}
-      <div className="bg-gradient-to-r from-red-500 to-red-600 py-12">
+      <div className="bg-red-500 py-12">
         <div className="container mx-auto px-4 text-center">
           <div className="mb-6">
             <Mail className="h-12 w-12 mx-auto mb-4 text-white" />
@@ -79,37 +79,37 @@ export default function Footer() {
       </div>
 
       {/* App Download Section */}
-      <div className="bg-gradient-to-r from-orange-600 to-red-700 py-8">
+      <div className="bg-orange-500 py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-center md:text-left">
-              <h3 className="font-bold text-lg text-white mb-1">NEW TO WOODINN HOME?</h3>
-              <p className="text-white/90 text-sm">Subscribe to our newsletter to get updates on our latest offers!</p>
-              <div className="flex items-center gap-2 mt-3">
+            <div className="text-left">
+              <h3 className="font-bold text-lg text-white mb-2">NEW TO WOODINN HOME?</h3>
+              <p className="text-white/90 text-sm mb-3">Subscribe to our newsletter to get updates on our latest offers!</p>
+              <div className="flex items-start gap-2">
                 <input 
                   type="checkbox" 
                   id="agree-terms" 
-                  className="w-4 h-4"
+                  className="w-4 h-4 mt-0.5"
                 />
-                <label htmlFor="agree-terms" className="text-white/90 text-xs">
+                <label htmlFor="agree-terms" className="text-white/90 text-xs leading-tight">
                   I agree to Woodinn's Privacy and Cookie Policy. You can unsubscribe from newsletters at any time.
                 </label>
               </div>
             </div>
             
-            <div className="text-center">
-              <h4 className="font-bold text-white text-xl mb-2">DOWNLOAD WOODINN FREE APP</h4>
+            <div className="text-right">
+              <h4 className="font-bold text-white text-lg mb-2">DOWNLOAD WOODINN FREE APP</h4>
               <p className="text-white/90 text-sm mb-4">Get access to exclusive offers!</p>
-              <div className="flex gap-3 justify-center">
+              <div className="flex gap-2 justify-end">
                 <Button 
-                  className="bg-black text-white hover:bg-gray-800 px-4 py-2 h-10 text-sm font-medium"
+                  className="bg-black text-white hover:bg-gray-800 px-3 py-2 h-9 text-xs font-medium rounded"
                   onClick={() => window.open('#', '_blank')}
                   data-testid="download-app-store"
                 >
                   📱 App Store
                 </Button>
                 <Button 
-                  className="bg-black text-white hover:bg-gray-800 px-4 py-2 h-10 text-sm font-medium"
+                  className="bg-black text-white hover:bg-gray-800 px-3 py-2 h-9 text-xs font-medium rounded"
                   onClick={() => window.open('#', '_blank')}
                   data-testid="download-play-store"
                 >
