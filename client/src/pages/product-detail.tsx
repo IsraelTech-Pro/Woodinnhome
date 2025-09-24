@@ -189,13 +189,13 @@ export default function ProductDetail() {
           <span className="font-medium text-gray-800" data-testid="product-breadcrumb-name">{product.name}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
-          {/* Enhanced Product Images */}
-          <div className="space-y-6">
-            {/* Main Image with Enhanced Features */}
-            <div className="relative group">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          {/* Compact Product Images */}
+          <div className="space-y-4">
+            {/* Main Image - Homepage Card Style */}
+            <div className="relative group max-w-md mx-auto lg:max-w-full">
               <div 
-                className={`relative aspect-square rounded-2xl overflow-hidden bg-white shadow-xl border border-gray-200 cursor-zoom-in transition-all duration-300 ${
+                className={`relative aspect-square rounded-xl overflow-hidden bg-gray-50 shadow-md cursor-zoom-in transition-all duration-300 ${
                   isImageZoomed ? 'transform scale-105' : ''
                 }`}
                 onClick={() => setIsFullscreen(true)}
@@ -205,18 +205,18 @@ export default function ProductDetail() {
                 <img 
                   src={product.images[selectedImage]} 
                   alt={product.name}
-                  className="w-full h-full object-contain p-4 transition-transform duration-300"
+                  className="w-full h-full object-cover transition-transform duration-300"
                   data-testid="main-product-image"
                 />
                 
                 {/* Zoom Indicator */}
-                <div className="absolute top-4 right-4 bg-black/60 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-3 right-3 bg-black/60 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
                   <ZoomIn className="h-4 w-4" />
                 </div>
 
                 {/* Discount Badge */}
                 {discountPercentage > 0 && (
-                  <Badge className="absolute top-4 left-4 bg-red-500 text-white text-sm px-3 py-1 font-semibold">
+                  <Badge className="absolute top-3 left-3 bg-orange-500 text-white text-sm px-3 py-1 font-semibold">
                     -{discountPercentage}% OFF
                   </Badge>
                 )}
@@ -226,33 +226,33 @@ export default function ProductDetail() {
                   <>
                     <button
                       onClick={(e) => { e.stopPropagation(); prevImage(); }}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-200"
                       data-testid="prev-image"
                     >
-                      <ChevronLeft className="h-5 w-5" />
+                      <ChevronLeft className="h-4 w-4" />
                     </button>
                     <button
                       onClick={(e) => { e.stopPropagation(); nextImage(); }}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-gray-800 p-2 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all duration-200"
                       data-testid="next-image"
                     >
-                      <ChevronRight className="h-5 w-5" />
+                      <ChevronRight className="h-4 w-4" />
                     </button>
                   </>
                 )}
               </div>
             </div>
 
-            {/* Enhanced Thumbnail Gallery */}
+            {/* Compact Thumbnail Gallery */}
             {product.images.length > 1 && (
-              <div className="flex gap-3 overflow-x-auto pb-2">
+              <div className="flex gap-2 justify-center lg:justify-start overflow-x-auto pb-2">
                 {product.images.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 ${
+                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                       selectedImage === index 
-                        ? 'border-orange-500 ring-2 ring-orange-200 shadow-lg' 
+                        ? 'border-orange-500 ring-2 ring-orange-200 shadow-md' 
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                     data-testid={`product-thumbnail-${index}`}
@@ -574,11 +574,11 @@ export default function ProductDetail() {
               </Button>
             </DialogTitle>
           </DialogHeader>
-          <div className="flex-1 relative">
+          <div className="flex-1 relative bg-gray-50">
             <img 
               src={product.images[selectedImage]} 
               alt={product.name}
-              className="w-full h-full object-contain p-4"
+              className="w-full h-full object-cover"
             />
             {product.images.length > 1 && (
               <>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Search, Filter, SlidersHorizontal } from "lucide-react";
@@ -11,6 +11,23 @@ import { Label } from "@/components/ui/label";
 import ProductCard from "@/components/product-card";
 import { type ProductWithCategory, type Category } from "@shared/schema";
 
+// Custom hook for debounced search
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
 export default function Products() {
   const params = useParams();
   const [location] = useLocation();
@@ -18,6 +35,9 @@ export default function Products() {
   const [sortBy, setSortBy] = useState("name");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<{ min?: number; max?: number }>({});
+
+  // Debounced search query for real-time search
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
   // Extract search from URL params
   useEffect(() => {
@@ -35,7 +55,7 @@ export default function Products() {
   const { data: products = [], isLoading } = useQuery<ProductWithCategory[]>({
     queryKey: ["/api/products", { 
       categoryId: params.category ? categories.find(c => c.slug === params.category)?.id : undefined,
-      search: searchQuery || undefined,
+      search: debouncedSearchQuery || undefined,
     }],
     enabled: !params.category || categories.length > 0,
   });
@@ -68,17 +88,16 @@ export default function Products() {
     }
   });
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Update URL with search params
+  // Auto-update URL when search query changes (for bookmarking)
+  useEffect(() => {
     const url = new URL(window.location.href);
-    if (searchQuery.trim()) {
-      url.searchParams.set('search', searchQuery);
+    if (debouncedSearchQuery.trim()) {
+      url.searchParams.set('search', debouncedSearchQuery);
     } else {
       url.searchParams.delete('search');
     }
-    window.history.pushState({}, '', url.toString());
-  };
+    window.history.replaceState({}, '', url.toString());
+  }, [debouncedSearchQuery]);
 
   const currentCategory = params.category ? categories.find(c => c.slug === params.category) : null;
 
@@ -98,20 +117,25 @@ export default function Products() {
 
       {/* Search and Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-8">
-        {/* Search */}
-        <form onSubmit={handleSearch} className="flex-1">
+        {/* Real-time Search */}
+        <div className="flex-1">
           <div className="relative">
             <Input
-              type="search"
-              placeholder="Search products..."
+              type="text"
+              placeholder="Type to search products in real-time..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
               data-testid="products-search-input"
             />
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            {isLoading && debouncedSearchQuery && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary border-t-transparent"></div>
+              </div>
+            )}
           </div>
-        </form>
+        </div>
 
         {/* Sort */}
         <Select value={sortBy} onValueChange={setSortBy}>
@@ -244,25 +268,25 @@ export default function Products() {
         {/* Products Grid */}
         <div className="flex-1">
           {isLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((i) => (
                 <div key={i} className="animate-pulse">
                   <div className="bg-gray-200 rounded-lg aspect-square mb-2"></div>
                   <div className="space-y-1">
-                    <div className="bg-gray-200 h-3 rounded"></div>
-                    <div className="bg-gray-200 h-3 rounded w-2/3"></div>
+                    <div className="bg-gray-200 h-2 rounded"></div>
+                    <div className="bg-gray-200 h-2 rounded w-2/3"></div>
                   </div>
                 </div>
               ))}
             </div>
           ) : sortedProducts.length > 0 ? (
             <>
-              <div className="flex items-center justify-between mb-6">
-                <p className="text-muted-foreground" data-testid="products-count">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-muted-foreground text-sm" data-testid="products-count">
                   Showing {sortedProducts.length} product{sortedProducts.length !== 1 ? 's' : ''}
                 </p>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
                 {sortedProducts.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}

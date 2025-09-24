@@ -20,87 +20,104 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/product/${product.id}`}>
       <div 
-        className="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-200 border border-gray-100 hover:border-gray-200 group cursor-pointer" 
+        className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-orange-200 group cursor-pointer transform hover:-translate-y-1" 
         data-testid={`product-card-${product.id}`}
       >
         {/* Product Image */}
-        <div className="relative aspect-square bg-gray-50">
+        <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100">
           <img 
             src={product.images[0]} 
             alt={product.name} 
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
           />
           
           {/* Discount Badge */}
           {discountPercentage > 0 && (
-            <Badge className="absolute top-2 left-2 bg-orange-500 hover:bg-orange-600 text-white text-xs px-2 py-1 font-semibold">
+            <Badge className="absolute top-3 left-3 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs px-3 py-1.5 font-bold shadow-lg">
               -{discountPercentage}%
             </Badge>
           )}
           
           {/* Popular Badge */}
           {product.featured && !product.originalPrice && (
-            <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 font-semibold">
+            <Badge className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs px-3 py-1.5 font-bold shadow-lg">
               Popular
             </Badge>
           )}
           
           {/* Out of Stock Overlay */}
           {!product.inStock && (
-            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-              <span className="text-white text-sm font-semibold bg-black/40 px-3 py-1 rounded">
+            <div className="absolute inset-0 bg-black/70 flex items-center justify-center backdrop-blur-sm">
+              <span className="text-white text-sm font-bold bg-red-500 px-4 py-2 rounded-lg shadow-lg">
                 Out of Stock
               </span>
             </div>
           )}
+
+          {/* Hover Effect Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
 
-        {/* Product Info */}
-        <div className="p-3">
-          {/* Product Name */}
-          <h4 
-            className="font-medium text-sm text-gray-800 mb-1 line-clamp-2 leading-relaxed group-hover:text-primary transition-colors" 
-            data-testid={`product-name-${product.id}`}
-          >
-            {product.name}
-          </h4>
-          
-          {/* Brand */}
-          {product.brand && (
-            <p className="text-xs text-gray-500 mb-2 capitalize">{product.brand}</p>
-          )}
-          
-          {/* Rating */}
-          <div className="flex items-center gap-1 mb-2">
-            <div className="flex">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star 
-                  key={star} 
-                  className={`h-3 w-3 ${
-                    star <= rating 
-                      ? 'fill-yellow-400 text-yellow-400' 
-                      : 'fill-gray-200 text-gray-200'
-                  }`} 
-                />
-              ))}
+        {/* Product Info with Better Containment */}
+        <div className="p-4 min-h-[120px] flex flex-col justify-between">
+          <div className="flex-1">
+            {/* Product Name - Better Typography */}
+            <h4 
+              className="font-semibold text-sm text-gray-900 mb-2 line-clamp-2 leading-snug group-hover:text-orange-600 transition-colors duration-200" 
+              data-testid={`product-name-${product.id}`}
+              title={product.name}
+            >
+              {product.name}
+            </h4>
+            
+            {/* Brand with Enhanced Styling */}
+            {product.brand && (
+              <p className="text-xs text-gray-500 mb-3 font-medium capitalize bg-gray-50 px-2 py-1 rounded-md inline-block">
+                {product.brand}
+              </p>
+            )}
+            
+            {/* Rating with Better Visual */}
+            <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-1 bg-yellow-50 px-2 py-1 rounded-full">
+                <div className="flex">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star 
+                      key={star} 
+                      className={`h-3 w-3 ${
+                        star <= rating 
+                          ? 'fill-yellow-400 text-yellow-400' 
+                          : 'fill-gray-200 text-gray-200'
+                      }`} 
+                    />
+                  ))}
+                </div>
+                <span className="text-xs text-gray-600 font-medium ml-1" data-testid={`product-reviews-${product.id}`}>
+                  ({product.reviewCount})
+                </span>
+              </div>
             </div>
-            <span className="text-xs text-gray-500 ml-1" data-testid={`product-reviews-${product.id}`}>
-              ({product.reviewCount})
-            </span>
           </div>
           
-          {/* Price Section */}
-          <div className="mb-2">
-            <div className="flex items-baseline gap-2">
-              <span 
-                className="text-lg font-bold text-gray-900" 
-                data-testid={`product-price-${product.id}`}
-              >
-                {formatPrice(product.price)}
-              </span>
-              {product.originalPrice && (
-                <span className="text-sm text-gray-400 line-through">
-                  {formatPrice(product.originalPrice)}
+          {/* Price Section - Better Design */}
+          <div className="border-t border-gray-100 pt-3 mt-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-baseline gap-2">
+                <span 
+                  className="text-lg font-bold text-gray-900" 
+                  data-testid={`product-price-${product.id}`}
+                >
+                  {formatPrice(product.price)}
+                </span>
+                {product.originalPrice && (
+                  <span className="text-sm text-gray-400 line-through">
+                    {formatPrice(product.originalPrice)}
+                  </span>
+                )}
+              </div>
+              {discountPercentage > 0 && (
+                <span className="text-xs text-green-600 font-semibold bg-green-50 px-2 py-1 rounded-full">
+                  Save {discountPercentage}%
                 </span>
               )}
             </div>
