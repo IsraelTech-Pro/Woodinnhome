@@ -209,7 +209,7 @@ export default function Admin() {
 
   // Calculate statistics
   const totalRevenue = orders
-    .filter(order => order.status === "delivered")
+    .filter(order => ["confirmed", "shipped", "delivered"].includes(order.status))
     .reduce((sum, order) => sum + parseFloat(order.totalAmount), 0);
   
   const pendingOrders = orders.filter(order => order.status === "pending").length;
@@ -246,7 +246,7 @@ export default function Admin() {
                 <div className="text-2xl font-bold" data-testid="total-revenue">
                   {formatPrice(totalRevenue)}
                 </div>
-                <p className="text-xs text-muted-foreground">From delivered orders</p>
+                <p className="text-xs text-muted-foreground">From confirmed and delivered orders</p>
               </CardContent>
             </Card>
 
