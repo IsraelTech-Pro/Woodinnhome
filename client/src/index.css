@@ -97,4 +97,43 @@
   .whatsapp-btn:hover {
     background: hsl(120 100% 20%);
   }
+
+  /* Horizontal scrolling utilities */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Smooth scroll behavior */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+
+  /* Horizontal scroll container */
+  .overflow-x-auto {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+  }
+
+  /* Ensure flex items maintain their width */
+  .flex-shrink-0 {
+    flex: 0 0 auto;
+  }
+
+  /* Mobile touch scrolling */
+  @media (max-width: 768px) {
+    .overflow-x-auto {
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x mandatory;
+    }
+    
+    .flex-shrink-0 {
+      scroll-snap-align: start;
+    }
+  }
 }

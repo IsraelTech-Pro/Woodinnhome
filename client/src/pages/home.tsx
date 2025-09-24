@@ -2,11 +2,143 @@ import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Shield, Truck, Phone, Star, Smartphone, Banknote, CreditCard } from "lucide-react";
+import { Shield, Truck, Phone, Star, Smartphone, Banknote, CreditCard, ChevronLeft, ChevronRight, Flame, TrendingUp, Sparkles, Clock } from "lucide-react";
 import ProductCard from "@/components/product-card";
 import CategoryCard from "@/components/category-card";
 import { Sofa, Tv, Palette, Zap } from "lucide-react";
 import { type ProductWithCategory, type Category } from "@shared/schema";
+import { useRef } from "react";
+import type { LucideIcon } from "lucide-react";
+
+// Horizontal scrolling product section component
+interface HorizontalProductSectionProps {
+  title: string;
+  subtitle: string;
+  products: ProductWithCategory[];
+  icon: LucideIcon;
+  bgColor?: string;
+  textColor?: string;
+  timeLeft?: string;
+  sectionId: string;
+}
+
+function HorizontalProductSection({ 
+  title, 
+  subtitle, 
+  products, 
+  icon: Icon, 
+  bgColor = "bg-card", 
+  textColor = "text-foreground",
+  timeLeft,
+  sectionId 
+}: HorizontalProductSectionProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -280, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 280, behavior: 'smooth' });
+    }
+  };
+
+  if (products.length === 0) return null;
+
+  return (
+    <section className="py-6 md:py-8">
+      <div className="container mx-auto px-4">
+        {/* Section Header */}
+        <div className={`${bgColor} ${textColor} rounded-lg p-4 mb-4`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                <Icon className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="text-lg md:text-xl font-bold" data-testid={`${sectionId}-title`}>
+                  {title}
+                </h3>
+                <p className="text-sm opacity-80" data-testid={`${sectionId}-subtitle`}>
+                  {subtitle}
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              {timeLeft && (
+                <div className="hidden md:flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  <span className="text-sm font-mono" data-testid={`${sectionId}-timer`}>
+                    Time Left: {timeLeft}
+                  </span>
+                </div>
+              )}
+              
+              <Link href="/products">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="border-white/30 text-current hover:bg-white/10"
+                  data-testid={`${sectionId}-see-all`}
+                >
+                  See All
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Horizontal Scrolling Products */}
+        <div className="relative group">
+          {/* Left Scroll Button */}
+          <button
+            onClick={scrollLeft}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-lg border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-gray-50"
+            data-testid={`${sectionId}-scroll-left`}
+          >
+            <ChevronLeft className="h-5 w-5 text-gray-600" />
+          </button>
+
+          {/* Right Scroll Button */}
+          <button
+            onClick={scrollRight}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-lg border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-gray-50"
+            data-testid={`${sectionId}-scroll-right`}
+          >
+            <ChevronRight className="h-5 w-5 text-gray-600" />
+          </button>
+
+          {/* Products Container */}
+          <div
+            ref={scrollRef}
+            className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-smooth"
+            style={{ 
+              scrollbarWidth: 'none', 
+              msOverflowStyle: 'none',
+              width: '100%',
+              maxWidth: '100%'
+            }}
+            data-testid={`${sectionId}-container`}
+          >
+            {products.map((product) => (
+              <div 
+                key={product.id} 
+                className="flex-shrink-0 w-64 md:w-72 min-w-64 md:min-w-72"
+                data-testid={`${sectionId}-product-${product.id}`}
+              >
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function Home() {
   const { data: categories = [] } = useQuery<Category[]>({
@@ -16,6 +148,17 @@ export default function Home() {
   const { data: featuredProducts = [] } = useQuery<ProductWithCategory[]>({
     queryKey: ["/api/products", { featured: true }],
   });
+
+  const { data: allProducts = [] } = useQuery<ProductWithCategory[]>({
+    queryKey: ["/api/products"],
+  });
+
+  // Create different product sections
+  const flashSaleProducts = allProducts.slice(0, 8);
+  const bestSellersProducts = allProducts.slice(2, 10);
+  const newArrivalsProducts = allProducts.slice(1, 9);
+  const electronicsProducts = allProducts.filter(p => p.category?.slug === 'electronics').slice(0, 8);
+  const furnitureProducts = allProducts.filter(p => p.category?.slug === 'furniture').slice(0, 8);
 
   const categoryIcons = {
     furniture: Sofa,
@@ -106,27 +249,66 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-8">
-            <h3 className="text-2xl font-bold" data-testid="featured-products-title">
-              Featured Products
-            </h3>
-            <Link href="/products">
-              <Button variant="outline" data-testid="view-all-products">
-                View All
-              </Button>
-            </Link>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Flash Sales Section */}
+      <HorizontalProductSection
+        title="Flash Sales"
+        subtitle="Limited time offers"
+        products={flashSaleProducts}
+        icon={Flame}
+        bgColor="bg-red-500"
+        textColor="text-white"
+        timeLeft="02h : 35m : 40s"
+        sectionId="flash-sales"
+      />
+
+      {/* Featured Products Section */}
+      <HorizontalProductSection
+        title="Featured Products"
+        subtitle="Hand-picked for you"
+        products={featuredProducts}
+        icon={Star}
+        sectionId="featured-products"
+      />
+
+      {/* Best Sellers Section */}
+      <HorizontalProductSection
+        title="Best Sellers"
+        subtitle="Most popular items"
+        products={bestSellersProducts}
+        icon={TrendingUp}
+        sectionId="best-sellers"
+      />
+
+      {/* Electronics Section */}
+      {electronicsProducts.length > 0 && (
+        <HorizontalProductSection
+          title="Electronics & Appliances"
+          subtitle="Modern tech for your home"
+          products={electronicsProducts}
+          icon={Tv}
+          sectionId="electronics"
+        />
+      )}
+
+      {/* Furniture Section */}
+      {furnitureProducts.length > 0 && (
+        <HorizontalProductSection
+          title="Furniture & Home"
+          subtitle="Comfort and style combined"
+          products={furnitureProducts}
+          icon={Sofa}
+          sectionId="furniture"
+        />
+      )}
+
+      {/* New Arrivals Section */}
+      <HorizontalProductSection
+        title="New Arrivals"
+        subtitle="Latest additions to our store"
+        products={newArrivalsProducts}
+        icon={Sparkles}
+        sectionId="new-arrivals"
+      />
 
       {/* Trust Signals */}
       <section className="py-12 bg-muted/30">
