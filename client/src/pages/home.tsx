@@ -31,8 +31,9 @@ import ProductCard from "@/components/product-card";
 import CategoryCard from "@/components/category-card";
 import { Sofa, Tv, Palette, Zap } from "lucide-react";
 import { type ProductWithCategory, type Category } from "@shared/schema";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import type { LucideIcon } from "lucide-react";
+import { useCountdown } from "@/hooks/use-countdown";
 import woodinnDeliveryImg from "@assets/image_1758733567781.png";
 import woodinnNovemberImg from "@assets/image_1758733665512.png";
 
@@ -293,6 +294,10 @@ export default function Home() {
     deals: Zap,
   };
 
+  // Dynamic countdown for flash deals (24 hours from now) - memoized to prevent recalculation
+  const flashDealsEndTime = useMemo(() => new Date(Date.now() + 24 * 60 * 60 * 1000), []);
+  const { timeLeft: flashDealsCountdown } = useCountdown(flashDealsEndTime);
+
   return (
     <div>
       {/* Jumia-style Hero Section */}
@@ -357,7 +362,7 @@ export default function Home() {
         icon={Timer}
         bgColor="bg-gradient-to-r from-red-500 to-orange-600"
         textColor="text-white"
-        timeLeft="02:15:33"
+        timeLeft={flashDealsCountdown}
         sectionId="flash-deals"
       />
 
