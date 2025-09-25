@@ -1,12 +1,12 @@
 #!/usr/bin/env tsx
 
-import { runJumiaScraper } from '../scraper/jumia-scraper';
+import { runSimpleJumiaScraper } from '../scraper/jumia-scraper-simple';
 
 async function main() {
   console.log('🎯 Starting Jumia Ghana data population...');
   
   try {
-    await runJumiaScraper();
+    await runSimpleJumiaScraper();
     console.log('✅ Data population completed successfully!');
     process.exit(0);
   } catch (error) {
