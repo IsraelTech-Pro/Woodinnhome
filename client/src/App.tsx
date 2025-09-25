@@ -14,10 +14,12 @@ import Admin from "@/pages/admin";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import CartSidebar from "@/components/cart-sidebar";
+import ScrollToTop from "@/components/scroll-to-top";
 
 function Router() {
   return (
     <div className="min-h-screen flex flex-col">
+      <ScrollToTop />
       <Header />
       <main className="flex-1">
         <Switch>
