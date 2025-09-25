@@ -49,12 +49,12 @@ export default function Footer() {
           <div>
             <h5 className="font-bold text-white mb-3 text-sm">ABOUT WOODINN HOME</h5>
             <ul className="space-y-1">
-              <li><a href="#about" className="text-gray-300 hover:text-orange-400 transition-colors">About us</a></li>
-              <li><a href="#careers" className="text-gray-300 hover:text-orange-400 transition-colors">Careers</a></li>
-              <li><a href="#terms" className="text-gray-300 hover:text-orange-400 transition-colors" data-testid="footer-terms">Terms and Conditions</a></li>
-              <li><a href="#privacy" className="text-gray-300 hover:text-orange-400 transition-colors" data-testid="footer-privacy">Privacy Notice</a></li>
-              <li><a href="#cookies" className="text-gray-300 hover:text-orange-400 transition-colors">Cookie Notice</a></li>
-              <li><a href="#flash-sales" className="text-gray-300 hover:text-orange-400 transition-colors">Flash Sales</a></li>
+              <li><Link href="/about-us" className="text-gray-300 hover:text-orange-400 transition-colors" data-testid="footer-about">About us</Link></li>
+              <li><Link href="/careers" className="text-gray-300 hover:text-orange-400 transition-colors" data-testid="footer-careers">Careers</Link></li>
+              <li><Link href="/terms-conditions" className="text-gray-300 hover:text-orange-400 transition-colors" data-testid="footer-terms">Terms and Conditions</Link></li>
+              <li><Link href="/privacy-notice" className="text-gray-300 hover:text-orange-400 transition-colors" data-testid="footer-privacy">Privacy Notice</Link></li>
+              <li><Link href="/cookie-notice" className="text-gray-300 hover:text-orange-400 transition-colors" data-testid="footer-cookies">Cookie Notice</Link></li>
+              <li><Link href="/flash-sales" className="text-gray-300 hover:text-orange-400 transition-colors" data-testid="footer-flash-sales">Flash Sales</Link></li>
             </ul>
           </div>
 
