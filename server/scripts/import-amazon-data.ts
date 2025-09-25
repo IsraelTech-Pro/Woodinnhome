@@ -364,7 +364,7 @@ async function importAmazonData(filePath: string, maxProducts?: number) {
 // Run if called directly
 if (process.argv[2] === 'run') {
   const maxProducts = process.argv[3] ? parseInt(process.argv[3]) : undefined;
-  importAmazonData('attached_assets/timestamp,title,seller_name,brand,d_1758794442079.txt', maxProducts)
+  importAmazonData('../attached_assets/timestamp,title,seller_name,brand,d_1758794442079.txt', maxProducts)
     .then(result => {
       console.log('Import successful:', result);
       process.exit(0);
