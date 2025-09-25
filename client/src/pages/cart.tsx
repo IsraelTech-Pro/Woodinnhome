@@ -8,7 +8,26 @@ import { useAuthStore } from "@/lib/auth-store";
 import { type CartItemWithProduct } from "@shared/schema";
 
 export default function Cart() {
-  const { userId } = useAuthStore();
+  const { userId, user } = useAuthStore();
+
+  // Redirect admin users away from cart page
+  if (user?.isAdmin) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="max-w-md mx-auto">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Access Restricted</h1>
+          <p className="text-gray-600 mb-8">
+            Admin users cannot access the shopping cart. This page is for customers only.
+          </p>
+          <Link href="/admin">
+            <Button className="bg-orange-500 hover:bg-orange-600">
+              Go to Admin Panel
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const { data: cartItems = [], isLoading } = useQuery<CartItemWithProduct[]>({
     queryKey: ["/api/cart", { userId }],

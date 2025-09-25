@@ -12,7 +12,7 @@ import { type CartItemWithProduct } from "@shared/schema";
 
 export default function CartSidebar() {
   const { isOpen, setOpen } = useCartStore();
-  const { userId } = useAuthStore();
+  const { userId, user } = useAuthStore();
 
   const { data: cartItems = [], isLoading } = useQuery<CartItemWithProduct[]>({
     queryKey: ["/api/cart", { userId }],
@@ -53,6 +53,11 @@ export default function CartSidebar() {
   const handleRemoveItem = (id: string) => {
     removeItemMutation.mutate(id);
   };
+
+  // Don't render cart sidebar for admin users
+  if (user?.isAdmin) {
+    return null;
+  }
 
   return (
     <Sheet open={isOpen} onOpenChange={setOpen}>

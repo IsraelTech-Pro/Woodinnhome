@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,7 +34,26 @@ type CheckoutForm = z.infer<typeof checkoutSchema>;
 
 export default function Checkout() {
   const [, setLocation] = useLocation();
-  const { userId } = useAuthStore();
+  const { userId, user } = useAuthStore();
+
+  // Redirect admin users away from checkout page
+  if (user?.isAdmin) {
+    return (
+      <div className="container mx-auto px-4 py-16 text-center">
+        <div className="max-w-md mx-auto">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Access Restricted</h1>
+          <p className="text-gray-600 mb-8">
+            Admin users cannot access the checkout process. This page is for customers only.
+          </p>
+          <Link href="/admin">
+            <Button className="bg-orange-500 hover:bg-orange-600">
+              Go to Admin Panel
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 

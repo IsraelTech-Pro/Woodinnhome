@@ -189,13 +189,16 @@ export default function Account() {
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8" data-testid="account-page-title">My Account</h1>
 
-      <Tabs defaultValue="orders" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2 lg:w-96">
-          <TabsTrigger value="orders" data-testid="orders-tab">Orders</TabsTrigger>
+      <Tabs defaultValue={user?.isAdmin ? "profile" : "orders"} className="space-y-6">
+        <TabsList className={user?.isAdmin ? "grid w-full grid-cols-1 lg:w-96" : "grid w-full grid-cols-2 lg:w-96"}>
+          {!(user?.isAdmin) && (
+            <TabsTrigger value="orders" data-testid="orders-tab">Orders</TabsTrigger>
+          )}
           <TabsTrigger value="profile" data-testid="profile-tab">Profile</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="orders" className="space-y-6">
+        {!(user?.isAdmin) && (
+          <TabsContent value="orders" className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold" data-testid="orders-section-title">Order History</h2>
             {orders.length > 0 && (
@@ -315,7 +318,8 @@ export default function Account() {
               ))}
             </div>
           )}
-        </TabsContent>
+          </TabsContent>
+        )}
 
         <TabsContent value="profile" className="space-y-6">
           <h2 className="text-2xl font-bold" data-testid="profile-section-title">Profile Information</h2>

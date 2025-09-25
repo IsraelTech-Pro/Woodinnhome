@@ -112,22 +112,24 @@ export default function Header() {
               </Button>
             )}
             
-            {/* Cart */}
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="relative" 
-              onClick={() => setCartOpen(true)}
-              data-testid="cart-button"
-            >
-              <ShoppingCart className="h-4 w-4 mr-1" />
-              <span className="hidden sm:inline text-sm">Cart</span>
-              {cartItemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center shadow-lg border-2 border-white" data-testid="cart-count">
-                  {cartItemCount}
-                </span>
-              )}
-            </Button>
+            {/* Cart - Hidden for admin users */}
+            {!(user?.isAdmin) && (
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="relative" 
+                onClick={() => setCartOpen(true)}
+                data-testid="cart-button"
+              >
+                <ShoppingCart className="h-4 w-4 mr-1" />
+                <span className="hidden sm:inline text-sm">Cart</span>
+                {cartItemCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center shadow-lg border-2 border-white" data-testid="cart-count">
+                    {cartItemCount}
+                  </span>
+                )}
+              </Button>
+            )}
           </div>
         </div>
         

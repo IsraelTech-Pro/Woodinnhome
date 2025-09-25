@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { useAuthStore } from "@/lib/auth-store";
 import { 
   Zap, 
   Clock, 
@@ -30,6 +31,7 @@ interface FlashSale {
 }
 
 export default function FlashSales() {
+  const { user } = useAuthStore();
   const [timeLeft, setTimeLeft] = useState({
     hours: 0,
     minutes: 0,
@@ -212,13 +214,15 @@ export default function FlashSales() {
                         </div>
                       </div>
 
-                      <Button 
-                        className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white"
-                        data-testid={`add-to-cart-${sale.id}`}
-                      >
-                        <ShoppingCart className="h-4 w-4 mr-2" />
-                        Add to Cart
-                      </Button>
+                      {!(user?.isAdmin) && (
+                        <Button 
+                          className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white"
+                          data-testid={`add-to-cart-${sale.id}`}
+                        >
+                          <ShoppingCart className="h-4 w-4 mr-2" />
+                          Add to Cart
+                        </Button>
+                      )}
                     </CardContent>
                   </Card>
                 );

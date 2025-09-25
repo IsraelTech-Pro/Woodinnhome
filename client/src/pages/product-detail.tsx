@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function ProductDetail() {
   const params = useParams();
-  const { userId } = useAuthStore();
+  const { userId, user } = useAuthStore();
   const { toast } = useToast();
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -347,56 +347,58 @@ export default function ProductDetail() {
               )}
             </div>
 
-            {/* Quantity & Actions */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 space-y-6">
-              <div className="flex items-center gap-4">
-                <Label htmlFor="quantity" className="font-semibold">Quantity:</Label>
-                <div className="flex items-center gap-0 border border-gray-200 rounded-lg">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    disabled={quantity <= 1}
-                    className="h-10 w-10 rounded-l-lg rounded-r-none border-r"
-                    data-testid="decrease-quantity"
+            {/* Quantity & Actions - Hidden for admin users */}
+            {!(user?.isAdmin) && (
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 space-y-6">
+                <div className="flex items-center gap-4">
+                  <Label htmlFor="quantity" className="font-semibold">Quantity:</Label>
+                  <div className="flex items-center gap-0 border border-gray-200 rounded-lg">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      disabled={quantity <= 1}
+                      className="h-10 w-10 rounded-l-lg rounded-r-none border-r"
+                      data-testid="decrease-quantity"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </Button>
+                    <span className="w-16 text-center font-semibold bg-gray-50 h-10 flex items-center justify-center" data-testid="quantity-display">
+                      {quantity}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setQuantity(Math.min(product.quantity, quantity + 1))}
+                      disabled={quantity >= product.quantity}
+                      className="h-10 w-10 rounded-r-lg rounded-l-none border-l"
+                      data-testid="increase-quantity"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex gap-3">
+                  <Button 
+                    size="lg" 
+                    className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold h-12"
+                    onClick={handleAddToCart}
+                    disabled={!product.inStock || addToCartMutation.isPending}
+                    data-testid="add-to-cart-button"
                   >
-                    <Minus className="h-4 w-4" />
+                    <ShoppingCart className="h-5 w-5 mr-2" />
+                    {addToCartMutation.isPending ? 'Adding...' : 'Add to Cart'}
                   </Button>
-                  <span className="w-16 text-center font-semibold bg-gray-50 h-10 flex items-center justify-center" data-testid="quantity-display">
-                    {quantity}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setQuantity(Math.min(product.quantity, quantity + 1))}
-                    disabled={quantity >= product.quantity}
-                    className="h-10 w-10 rounded-r-lg rounded-l-none border-l"
-                    data-testid="increase-quantity"
-                  >
-                    <Plus className="h-4 w-4" />
+                  <Button variant="outline" size="lg" className="h-12 w-12" data-testid="wishlist-button">
+                    <Heart className="h-5 w-5" />
+                  </Button>
+                  <Button variant="outline" size="lg" className="h-12 w-12" data-testid="share-button">
+                    <Share className="h-5 w-5" />
                   </Button>
                 </div>
               </div>
-
-              <div className="flex gap-3">
-                <Button 
-                  size="lg" 
-                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold h-12"
-                  onClick={handleAddToCart}
-                  disabled={!product.inStock || addToCartMutation.isPending}
-                  data-testid="add-to-cart-button"
-                >
-                  <ShoppingCart className="h-5 w-5 mr-2" />
-                  {addToCartMutation.isPending ? 'Adding...' : 'Add to Cart'}
-                </Button>
-                <Button variant="outline" size="lg" className="h-12 w-12" data-testid="wishlist-button">
-                  <Heart className="h-5 w-5" />
-                </Button>
-                <Button variant="outline" size="lg" className="h-12 w-12" data-testid="share-button">
-                  <Share className="h-5 w-5" />
-                </Button>
-              </div>
-            </div>
+            )}
 
             {/* Key Features */}
             <Card className="shadow-sm border-gray-100">
