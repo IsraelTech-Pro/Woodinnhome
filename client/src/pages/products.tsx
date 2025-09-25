@@ -250,29 +250,6 @@ export default function Products() {
             </div>
           </div>
 
-          {/* Additional Filters */}
-          <div className="mb-6">
-            <h4 className="font-medium mb-3">Additional Filters</h4>
-            <div className="space-y-2">
-              {categories.map((category) => (
-                <div key={category.id} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={`filter-${category.id}`}
-                    checked={selectedCategories.includes(category.id)}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setSelectedCategories([...selectedCategories, category.id]);
-                      } else {
-                        setSelectedCategories(selectedCategories.filter(id => id !== category.id));
-                      }
-                    }}
-                    data-testid={`additional-filter-${category.slug}`}
-                  />
-                  <Label htmlFor={`filter-${category.id}`} className="text-sm">{category.name}</Label>
-                </div>
-              ))}
-            </div>
-          </div>
 
           {/* Price Range Filter */}
           <div className="mb-6">
