@@ -7,6 +7,7 @@ interface AuthStore {
   userId: string;
   setUser: (user: User | null) => void;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -22,6 +23,30 @@ export const useAuthStore = create<AuthStore>()(
         user: null, 
         userId: 'guest' 
       }),
+      refreshUser: async () => {
+        const { userId } = get();
+        if (!userId || userId === 'guest') {
+          return;
+        }
+
+        try {
+          const response = await fetch('/api/auth/me', {
+            headers: {
+              'x-user-id': userId,
+            },
+          });
+
+          if (response.ok) {
+            const updatedUser = await response.json();
+            set({ user: updatedUser });
+          } else if (response.status === 401 || response.status === 404) {
+            // User no longer exists or invalid, logout
+            set({ user: null, userId: 'guest' });
+          }
+        } catch (error) {
+          console.error('Failed to refresh user data:', error);
+        }
+      },
     }),
     {
       name: 'woodinn-auth',

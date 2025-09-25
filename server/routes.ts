@@ -84,6 +84,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get current user endpoint (for refreshing user data)
+  app.get("/api/auth/me", async (req, res) => {
+    try {
+      const userId = req.headers['x-user-id'] as string;
+      if (!userId || userId === 'guest') {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Remove password from response
+      const { password, ...userResponse } = user;
+      res.json(userResponse);
+    } catch (error) {
+      console.error("Get current user error:", error);
+      res.status(500).json({ error: "Failed to get user data" });
+    }
+  });
+
   // Categories
   app.get("/api/categories", async (req, res) => {
     try {

@@ -1,16 +1,27 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Package, Clock, CheckCircle, XCircle, User, MapPin, Phone } from "lucide-react";
+import { Package, Clock, CheckCircle, XCircle, User, MapPin, Phone, Mail, Calendar, Shield, Edit3 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
 import { useAuthStore } from "@/lib/auth-store";
+import AuthModal from "@/components/auth-modal";
 import { type OrderWithItems } from "@shared/schema";
 
 export default function Account() {
-  const { userId } = useAuthStore();
+  const { user, userId, refreshUser } = useAuthStore();
   const [highlightedOrderId, setHighlightedOrderId] = useState<string | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  // Refresh user data on mount to get latest admin status
+  useEffect(() => {
+    if (user && userId !== 'guest') {
+      refreshUser();
+    }
+  }, [refreshUser, user, userId]);
 
   // Check for order highlight from URL
   useEffect(() => {
@@ -232,33 +243,169 @@ export default function Account() {
         <TabsContent value="profile" className="space-y-6">
           <h2 className="text-2xl font-bold" data-testid="profile-section-title">Profile Information</h2>
           
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <User className="h-5 w-5" />
-                Account Details
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label className="font-medium text-muted-foreground">Account Type</Label>
+          {!user || userId === 'guest' ? (
+            // Guest user state
+            <Card>
+              <CardHeader className="text-center">
+                <div className="mx-auto w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+                  <User className="h-8 w-8 text-orange-600" />
+                </div>
+                <CardTitle className="text-xl">Welcome, Guest!</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center space-y-6">
+                <div className="space-y-4">
+                  <p className="text-muted-foreground">
+                    You're currently shopping as a guest. Create an account to enjoy personalized features and track your orders.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto">
+                    <div className="bg-orange-50 p-4 rounded-lg">
+                      <Package className="h-6 w-6 text-orange-600 mx-auto mb-2" />
+                      <h4 className="font-medium text-sm">Order Tracking</h4>
+                      <p className="text-xs text-muted-foreground">Track your orders easily</p>
+                    </div>
+                    
+                    <div className="bg-red-50 p-4 rounded-lg">
+                      <User className="h-6 w-6 text-red-600 mx-auto mb-2" />
+                      <h4 className="font-medium text-sm">Personal Profile</h4>
+                      <p className="text-xs text-muted-foreground">Save your preferences</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => setAuthModalOpen(true)}
+                      className="w-full sm:w-auto"
+                      data-testid="create-account-button"
+                    >
+                      Create Account
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => setAuthModalOpen(true)}
+                      className="w-full sm:w-auto"
+                      data-testid="login-account-button"
+                    >
+                      Login to Existing Account
+                    </Button>
+                  </div>
+                </div>
+                
+                <Separator />
+                
+                <div className="space-y-2">
+                  <Label className="font-medium text-muted-foreground">Current Session</Label>
                   <p className="text-lg" data-testid="account-type">Guest User</p>
                   <p className="text-sm text-muted-foreground">
-                    {userId === 'guest' ? 'Shopping as guest' : `User ID: ${userId}`}
+                    Orders placed: {orders.length}
                   </p>
                 </div>
                 
-                <div>
-                  <Label className="font-medium text-muted-foreground">Orders Placed</Label>
-                  <p className="text-lg" data-testid="total-orders">{orders.length}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Total orders in your account
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+                <AuthModal 
+                  open={authModalOpen} 
+                  onOpenChange={setAuthModalOpen}
+                  defaultTab="register"
+                />
+              </CardContent>
+            </Card>
+          ) : (
+            // Authenticated user state
+            <>
+              {/* User Profile Header */}
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-start gap-6">
+                    <Avatar className="h-20 w-20">
+                      <AvatarFallback className="text-lg font-semibold bg-gradient-to-br from-orange-400 to-red-500 text-white">
+                        {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                    
+                    <div className="flex-1 space-y-4">
+                      <div>
+                        <h3 className="text-2xl font-bold" data-testid="user-full-name">
+                          {user.firstName} {user.lastName}
+                        </h3>
+                        <p className="text-muted-foreground" data-testid="user-username">
+                          @{user.username}
+                        </p>
+                        {user.isAdmin && (
+                          <Badge className="bg-orange-100 text-orange-800 mt-2" data-testid="admin-badge">
+                            <Shield className="h-3 w-3 mr-1" />
+                            Administrator
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-4">
+                        <Button variant="outline" size="sm" data-testid="edit-profile-button">
+                          <Edit3 className="h-4 w-4 mr-2" />
+                          Edit Profile
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Account Details */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="h-5 w-5" />
+                    Account Details
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div>
+                        <Label className="font-medium text-muted-foreground flex items-center gap-2">
+                          <Mail className="h-4 w-4" />
+                          Email Address
+                        </Label>
+                        <p className="text-lg" data-testid="user-email">{user.email}</p>
+                      </div>
+                      
+                      {user.phone && (
+                        <div>
+                          <Label className="font-medium text-muted-foreground flex items-center gap-2">
+                            <Phone className="h-4 w-4" />
+                            Phone Number
+                          </Label>
+                          <p className="text-lg" data-testid="user-phone">{user.phone}</p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <Label className="font-medium text-muted-foreground flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          Member Since
+                        </Label>
+                        <p className="text-lg" data-testid="user-join-date">
+                          {new Date(user.createdAt).toLocaleDateString('en-GB', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <Label className="font-medium text-muted-foreground">Orders Placed</Label>
+                        <p className="text-lg" data-testid="total-orders">{orders.length}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Total orders in your account
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
 
           {/* Quick Actions */}
           <Card>
