@@ -170,23 +170,23 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="container mx-auto px-4 py-6">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 mb-8">
+      <div className="container mx-auto px-3 lg:px-4 py-4 lg:py-6">
+        {/* Breadcrumb - Mobile Optimized */}
+        <div className="flex items-center gap-1 lg:gap-2 mb-4 lg:mb-8 text-xs lg:text-sm">
           <Link href="/products">
             <Button variant="ghost" size="sm" className="hidden lg:flex text-gray-600 hover:text-primary" data-testid="back-button">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Products
             </Button>
           </Link>
-          <span className="text-gray-400">/</span>
+          <span className="text-gray-400 hidden lg:inline">/</span>
           <Link href={`/products/${product.category.slug}`}>
-            <span className="text-gray-600 hover:text-primary cursor-pointer transition-colors">
+            <span className="text-gray-600 hover:text-primary cursor-pointer transition-colors truncate">
               {product.category.name}
             </span>
           </Link>
           <span className="text-gray-400">/</span>
-          <span className="font-medium text-gray-800" data-testid="product-breadcrumb-name">{product.name}</span>
+          <span className="font-medium text-gray-800 truncate" data-testid="product-breadcrumb-name">{product.name}</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 mb-8 lg:mb-12">
