@@ -8,6 +8,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/lib/auth-store";
 import AuthModal from "@/components/auth-modal";
+import MobileSearch from "@/components/mobile-search";
 import { type CartItemWithProduct } from "@shared/schema";
 import woodinnLogo from "@assets/Screenshot_2025-09-24_234230-removebg-preview_1758754088474.png";
 
@@ -15,6 +16,7 @@ export default function Header() {
   const [location] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const { setOpen: setCartOpen } = useCartStore();
   const { user, userId, logout } = useAuthStore();
 
@@ -50,8 +52,8 @@ export default function Header() {
             </div>
           </Link>
           
-          {/* Search Bar - Full width on desktop, prominent on mobile */}
-          <form onSubmit={handleSearch} className="flex-1 max-w-lg mx-4">
+          {/* Search Bar - Hidden on mobile, visible on desktop */}
+          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-lg mx-4">
             <div className="relative w-full">
               <Input 
                 type="search" 
@@ -75,6 +77,17 @@ export default function Header() {
           
           {/* Actions */}
           <div className="flex items-center space-x-3">
+            {/* Mobile Search Button */}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="md:hidden" 
+              onClick={() => setMobileSearchOpen(true)}
+              data-testid="mobile-search-button"
+            >
+              <Search className="h-4 w-4" />
+            </Button>
+            
             {/* Authentication */}
             {user ? (
               <>
@@ -188,6 +201,12 @@ export default function Header() {
         open={authModalOpen} 
         onOpenChange={setAuthModalOpen}
         defaultTab="login"
+      />
+      
+      {/* Mobile Search Modal */}
+      <MobileSearch 
+        isOpen={mobileSearchOpen} 
+        onClose={() => setMobileSearchOpen(false)} 
       />
     </header>
   );
