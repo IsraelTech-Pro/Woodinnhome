@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Plus, Edit, Trash2, Package, Users, BarChart3, Eye, Upload, Camera, Link, Home, Settings } from "lucide-react";
+import { Plus, Edit, Trash2, Package, Users, BarChart3, Eye, Upload, Camera, Link, Home, Settings, Shield, UserX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,8 @@ import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuthStore } from "@/lib/auth-store";
+import AuthModal from "@/components/auth-modal";
 import { type ProductWithCategory, type Category, type OrderWithItems, type HomeSection, insertHomeSectionSchema } from "@shared/schema";
 
 const productSchema = z.object({
@@ -56,6 +58,8 @@ type HomeSectionForm = z.infer<typeof homeSectionSchema>;
 
 export default function Admin() {
   const { toast } = useToast();
+  const { user } = useAuthStore();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductWithCategory | null>(null);
   const [imageUrl, setImageUrl] = useState("");
@@ -65,6 +69,67 @@ export default function Admin() {
   const [isAddHomeSectionOpen, setIsAddHomeSectionOpen] = useState(false);
   const [editingHomeSection, setEditingHomeSection] = useState<HomeSection | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Authentication guards
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4">
+              <Shield className="h-6 w-6 text-red-600" />
+            </div>
+            <CardTitle className="text-xl">Authentication Required</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              You must be logged in to access the admin panel.
+            </p>
+            <Button 
+              onClick={() => setAuthModalOpen(true)}
+              className="w-full"
+              data-testid="admin-login-button"
+            >
+              Login to Continue
+            </Button>
+            <AuthModal 
+              open={authModalOpen} 
+              onOpenChange={setAuthModalOpen}
+              defaultTab="login"
+            />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!user.isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+              <UserX className="h-6 w-6 text-orange-600" />
+            </div>
+            <CardTitle className="text-xl">Access Denied</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <p className="text-muted-foreground">
+              You don't have permission to access the admin panel. Only administrators can view this page.
+            </p>
+            <Button 
+              onClick={() => window.history.back()}
+              variant="outline"
+              className="w-full"
+              data-testid="admin-go-back-button"
+            >
+              Go Back
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const { data: products = [], isLoading: productsLoading } = useQuery<ProductWithCategory[]>({
     queryKey: ["/api/products"],
