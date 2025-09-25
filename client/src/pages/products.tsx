@@ -212,95 +212,91 @@ export default function Products() {
         </Sheet>
       </div>
 
-      <div className="flex gap-8 min-h-screen">
-        {/* Desktop Sidebar Filters - Sticky and Non-scrollable */}
-        <div className="hidden md:block w-64 flex-shrink-0">
-          <div className="sticky top-4 space-y-6 max-h-[calc(100vh-2rem)] overflow-y-auto">
-            <div>
-              <h3 className="font-semibold mb-4">Filters</h3>
-              
-              {/* Categories Navigation */}
-              <div className="mb-6">
-                <h4 className="font-medium mb-3">Categories</h4>
-                <div className="space-y-2">
-                  <Link
-                    href="/products"
-                    className={`block text-sm px-3 py-2 rounded-md transition-colors ${
-                      !params.category 
-                        ? 'bg-orange-500 text-white font-medium' 
-                        : 'text-gray-600 hover:bg-gray-100 hover:text-primary'
-                    }`}
-                    data-testid="category-nav-all"
-                  >
-                    All Products
-                  </Link>
-                  {categories.map((category) => (
-                    <Link
-                      key={category.id}
-                      href={`/products/${category.slug}`}
-                      className={`block text-sm px-3 py-2 rounded-md transition-colors ${
-                        params.category === category.slug 
-                          ? 'bg-orange-500 text-white font-medium' 
-                          : 'text-gray-600 hover:bg-gray-100 hover:text-primary'
-                      }`}
-                      data-testid={`category-nav-${category.slug}`}
-                    >
-                      {category.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+      <div className="relative">
+        {/* Desktop Sidebar Filters - Fixed Position */}
+        <div className="hidden md:block fixed left-4 top-20 w-64 z-10 bg-white border rounded-lg p-4 max-h-[calc(100vh-6rem)] overflow-y-auto shadow-lg">
+          <h3 className="font-semibold mb-4">Filters</h3>
+                
+          {/* Categories Navigation */}
+          <div className="mb-6">
+            <h4 className="font-medium mb-3">Categories</h4>
+            <div className="space-y-2">
+              <Link
+                href="/products"
+                className={`block text-sm px-3 py-2 rounded-md transition-colors ${
+                  !params.category 
+                    ? 'bg-orange-500 text-white font-medium' 
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-primary'
+                }`}
+                data-testid="category-nav-all"
+              >
+                All Products
+              </Link>
+              {categories.map((category) => (
+                <Link
+                  key={category.id}
+                  href={`/products/${category.slug}`}
+                  className={`block text-sm px-3 py-2 rounded-md transition-colors ${
+                    params.category === category.slug 
+                      ? 'bg-orange-500 text-white font-medium' 
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-primary'
+                  }`}
+                  data-testid={`category-nav-${category.slug}`}
+                >
+                  {category.name}
+                </Link>
+              ))}
+            </div>
+          </div>
 
-              {/* Additional Filters */}
-              <div className="mb-6">
-                <h4 className="font-medium mb-3">Additional Filters</h4>
-                <div className="space-y-2">
-                  {categories.map((category) => (
-                    <div key={category.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`filter-${category.id}`}
-                        checked={selectedCategories.includes(category.id)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setSelectedCategories([...selectedCategories, category.id]);
-                          } else {
-                            setSelectedCategories(selectedCategories.filter(id => id !== category.id));
-                          }
-                        }}
-                        data-testid={`additional-filter-${category.slug}`}
-                      />
-                      <Label htmlFor={`filter-${category.id}`} className="text-sm">{category.name}</Label>
-                    </div>
-                  ))}
+          {/* Additional Filters */}
+          <div className="mb-6">
+            <h4 className="font-medium mb-3">Additional Filters</h4>
+            <div className="space-y-2">
+              {categories.map((category) => (
+                <div key={category.id} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={`filter-${category.id}`}
+                    checked={selectedCategories.includes(category.id)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setSelectedCategories([...selectedCategories, category.id]);
+                      } else {
+                        setSelectedCategories(selectedCategories.filter(id => id !== category.id));
+                      }
+                    }}
+                    data-testid={`additional-filter-${category.slug}`}
+                  />
+                  <Label htmlFor={`filter-${category.id}`} className="text-sm">{category.name}</Label>
                 </div>
-              </div>
+              ))}
+            </div>
+          </div>
 
-              {/* Price Range Filter */}
-              <div>
-                <h4 className="font-medium mb-3">Price Range (GHS)</h4>
-                <div className="space-y-2">
-                  <Input
-                    type="number"
-                    placeholder="Min price"
-                    value={priceRange.min || ""}
-                    onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value ? Number(e.target.value) : undefined })}
-                    data-testid="min-price"
-                  />
-                  <Input
-                    type="number"
-                    placeholder="Max price"
-                    value={priceRange.max || ""}
-                    onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value ? Number(e.target.value) : undefined })}
-                    data-testid="max-price"
-                  />
-                </div>
-              </div>
+          {/* Price Range Filter */}
+          <div className="mb-6">
+            <h4 className="font-medium mb-3">Price Range (GHS)</h4>
+            <div className="space-y-2">
+              <Input
+                type="number"
+                placeholder="Min price"
+                value={priceRange.min || ""}
+                onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value ? Number(e.target.value) : undefined })}
+                data-testid="min-price"
+              />
+              <Input
+                type="number"
+                placeholder="Max price"
+                value={priceRange.max || ""}
+                onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value ? Number(e.target.value) : undefined })}
+                data-testid="max-price"
+              />
             </div>
           </div>
         </div>
 
-        {/* Products Grid - Scrollable */}
-        <div className="flex-1 min-w-0">
+        {/* Products Grid - Scrollable with margin for fixed sidebar */}
+        <div className="md:ml-72 min-w-0">
           {isLoading ? (
             <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((i) => (
