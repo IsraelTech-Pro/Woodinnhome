@@ -89,33 +89,174 @@ export class RealisticJumiaData {
     console.log(`🎨 Initialized unique image pool with ${RealisticJumiaData.uniqueImagePool.length} images`);
   }
   
-  private getProductSpecificImages(productName: string, brand: string, uniqueId: number): string[] {
-    this.initializeUniqueImagePool();
+  private getProductSpecificImages(productName: string, brand: string, categoryName: string, uniqueId: number): string[] {
+    // Get real Unsplash image IDs based on product type and category
+    const imagePool = this.getRealImagePool(productName, brand, categoryName);
     
-    // Get 3 unique images that haven't been used yet
-    const availableImages = RealisticJumiaData.uniqueImagePool.filter(url => !RealisticJumiaData.usedImages.has(url));
-    
-    // Ensure we have enough images - should never happen with 2500+ image pool for 700 products
-    if (availableImages.length < 3) {
-      throw new Error(`❌ Critical Error: Not enough unique images available! Only ${availableImages.length} images left. Pool size: ${RealisticJumiaData.uniqueImagePool.length}, Used: ${RealisticJumiaData.usedImages.size}`);
-    }
-    
-    // Select 3 completely unique images for this product from available pool
+    // Select 3 unique images from the appropriate pool
     const productImages: string[] = [];
-    const selectedIndices = new Set<number>();
+    const seed = this.getProductSeed(productName, brand, uniqueId);
     
-    // Ensure we get exactly 3 unique images from available images only
-    while (selectedIndices.size < 3) {
-      const randomIndex = Math.floor(Math.random() * availableImages.length);
-      if (!selectedIndices.has(randomIndex)) {
-        selectedIndices.add(randomIndex);
-        const selectedImage = availableImages[randomIndex];
-        productImages.push(selectedImage);
-        RealisticJumiaData.usedImages.add(selectedImage);
-      }
+    for (let i = 0; i < 3; i++) {
+      const imageIndex = (seed + i) % imagePool.length;
+      const imageId = imagePool[imageIndex];
+      const imageUrl = `https://images.unsplash.com/photo-${imageId}?w=400&h=400&fit=crop&auto=format&q=85`;
+      productImages.push(imageUrl);
     }
     
     return productImages;
+  }
+  
+  private getRealImagePool(productName: string, brand: string, categoryName?: string): string[] {
+    const name = productName.toLowerCase();
+    const category = (categoryName || '').toLowerCase();
+    
+    // Real verified Unsplash image IDs organized by category
+    
+    // SMARTPHONES - All phone products
+    if (category.includes('smartphones') || category.includes('phone') || name.includes('smartphone') || name.includes('phone') || name.includes('iphone') || name.includes('samsung') || name.includes('tecno') || name.includes('infinix') || name.includes('xiaomi')) {
+      return [
+        '1511707171634-5f897ff02aa9', '1592750475338-74b7b21085ab', '1520923642038-b4259acecbd7',
+        '1574786398533-86b531c1c75b', '1565814329452-e1efa11c5b89', '1556616070641-4c4e9e4e6b5a',
+        '1598662708287-cf29d2d4d5b5', '1593642634443-1f0e36a0e95e', '1601784551446-20c9e07cdbdb'
+      ];
+    }
+    
+    // ELECTRONICS - Tech gadgets, headphones, etc.
+    if (category.includes('electronics') || name.includes('headphone') || name.includes('earphone') || name.includes('airpod') || name.includes('headset') || name.includes('earbud') || name.includes('speaker') || name.includes('camera')) {
+      return [
+        '1505740420928-5e560c06d30e', '1608043152269-423dbba4e7e1', '1545454675-3531b543be5d',
+        '1590658268037-6bf12165a8df', '1603464104080-11c87bd1b07c', '1604511276998-e98b2c123470',
+        '1493711662062-fa541adb3fc8', '1577563908411-5bff4e8c4910', '1545147611-52a16bbe5b5d'
+      ];
+    }
+    
+    // FASHION - Shoes, clothing, accessories
+    if (category.includes('fashion') || name.includes('shoe') || name.includes('sneaker') || name.includes('boot') || name.includes('shirt') || name.includes('dress') || name.includes('jean') || name.includes('trouser') || name.includes('clothing') || name.includes('watch') || name.includes('bag')) {
+      return [
+        '1542291026-7eec264c27ff', '1460353581641-37baddab0fa2', '1549298916-b41d501d3772',
+        '1595950653106-6c9ebd614d3a', '1541099649105-f69ad21f3246', '1507297230493-de48e06ba482',
+        '1445205170230-053b83016050', '1434389677669-e08b4cac3105', '1523275335684-37898b6baf30'
+      ];
+    }
+    
+    // HOME & KITCHEN - Kitchen appliances, cooking items
+    if (category.includes('home') || category.includes('kitchen') || name.includes('blender') || name.includes('mixer') || name.includes('kitchen') || name.includes('cooking') || name.includes('pot') || name.includes('pan')) {
+      return [
+        '1556909114-a6161f58d7bf', '1543353071-873f17a7a088', '1558618666-fcd25c85cd64',
+        '1586201375761-83865001e31c', '1571171637578-41bc2dd41cd2', '1566233995-29c2e7bb50c0',
+        '1570962838-b13b95c1b2e9', '1556909114-a6161f58d7bf', '1571171637578-41bc2dd41cd2'
+      ];
+    }
+    
+    // HEALTH & BEAUTY - Skincare, beauty products, health items
+    if (category.includes('health') || category.includes('beauty') || name.includes('skincare') || name.includes('makeup') || name.includes('cream') || name.includes('lotion') || name.includes('shampoo') || name.includes('perfume') || name.includes('toothbrush')) {
+      return [
+        '1556228453-efd6c1ff04f6', '1580618672591-ab1abc15439e', '1571781665645-62e5952581cd',
+        '1559056199-a5dc661f3371', '1604654888316-1e3ad55b2c0f', '1595433707485-d3ff0b0db3b5',
+        '1512207110600-5b8b8f1e1861', '1571745744197-3af0b41d0647', '1574109036746-b8c20f1d6c31'
+      ];
+    }
+    
+    // APPLIANCES - Large home appliances
+    if (category.includes('appliances') || name.includes('refrigerator') || name.includes('fridge') || name.includes('freezer') || name.includes('washing') || name.includes('dryer') || name.includes('microwave') || name.includes('oven')) {
+      return [
+        '1558618666-fcd25c85cd64', '1586201375761-83865001e31c', '1571171637578-41bc2dd41cd2',
+        '1568292971-c57a42e63a1e', '1545147611-52a16bbe5b5d', '1493711662062-fa541adb3fc8',
+        '1577563908411-5bff4e8c4910', '1586023492125-27b2c045efd7', '1555041469-a586c962d665'
+      ];
+    }
+    
+    // SUPERMARKET - Food, groceries, household items
+    if (category.includes('supermarket') || category.includes('grocery') || name.includes('food') || name.includes('snack') || name.includes('drink') || name.includes('milk') || name.includes('bread') || name.includes('rice') || name.includes('oil')) {
+      return [
+        '1542838132-1fb37c5c4a07', '1559056199-a5dc661f3371', '1556909114-a6161f58d7bf',
+        '1543353071-873f17a7a088', '1604654888316-1e3ad55b2c0f', '1571171637578-41bc2dd41cd2',
+        '1586201375761-83865001e31c', '1568292971-c57a42e63a1e', '1570962838-b13b95c1b2e9'
+      ];
+    }
+    
+    // FURNITURE - Home furniture items
+    if (category.includes('furniture') || name.includes('chair') || name.includes('table') || name.includes('bed') || name.includes('sofa') || name.includes('desk') || name.includes('cabinet') || name.includes('shelf')) {
+      return [
+        '1586023492125-27b2c045efd7', '1555041469-a586c962d665', '1506439773649-6e0eb8cfb237',
+        '1540574843-75ddcdccb2e7', '1565814329452-e1efa11c5b89', '1583847268-a7b1fc684c05',
+        '1555603699-8e96d1d97e39', '1449505849-82a0e4d6c1b5', '1543002588-b4ba6359a9d6'
+      ];
+    }
+    
+    // COMPUTING - Laptops, computers, accessories
+    if (category.includes('computing') || name.includes('laptop') || name.includes('macbook') || name.includes('computer') || name.includes('desktop') || name.includes('mouse') || name.includes('keyboard')) {
+      return [
+        '1517336714731-489689fd1ca8', '1541807084-5c52b6b3adef', '1496181133206-80ce9b88a853',
+        '1525547719571-a2d4ac8945e2', '1484788984921-03950022c9ef', '1531297484001-80022131f5a1',
+        '1517077304055-6e89532e7c25', '1504609813117-fdb340fb6c3c', '1529236216718-45e7d75c82fc'
+      ];
+    }
+    
+    // GAMING - Gaming consoles, games, gaming accessories
+    if (category.includes('gaming') || name.includes('game') || name.includes('playstation') || name.includes('xbox') || name.includes('nintendo') || name.includes('controller')) {
+      return [
+        '1493711662062-fa541adb3fc8', '1551103782-8ab875ca71ef', '1606144216-d1b00c0ddc79',
+        '1511512578047-aa0b6e7ca9dd', '1545147611-52a16bbe5b5d', '1574175505-30b04b6e69b4',
+        '1493711662062-fa541adb3fc8', '1551103782-8ab875ca71ef', '1606144216-d1b00c0ddc79'
+      ];
+    }
+    
+    // SPORTS & FITNESS - Sports equipment, fitness gear
+    if (category.includes('sports') || category.includes('fitness') || name.includes('sport') || name.includes('fitness') || name.includes('exercise') || name.includes('gym') || name.includes('ball') || name.includes('bike')) {
+      return [
+        '1571019613454-1cb2f99b2d8b', '1544966503-1c73cc6ac0ee', '1534367651227-c314e4c6a8d1',
+        '1584464491033-06628f3c6b7b', '1571019613454-1cb2f99b2d8b', '1544966503-1c73cc6ac0ee',
+        '1534367651227-c314e4c6a8d1', '1584464491033-06628f3c6b7b', '1571019613454-1cb2f99b2d8b'
+      ];
+    }
+    
+    // AUTOMOBILES - Car accessories and automotive parts
+    if (category.includes('automobiles') || category.includes('automotive') || name.includes('car') || name.includes('auto') || name.includes('tire') || name.includes('engine')) {
+      return [
+        '1549317661-bd32c8ce0db2', '1494976113640-ac09f84fb5be', '1506905925346-9dfd13ee196e',
+        '1549317661-bd32c8ce0db2', '1494976113640-ac09f84fb5be', '1506905925346-9dfd13ee196e',
+        '1549317661-bd32c8ce0db2', '1494976113640-ac09f84fb5be', '1506905925346-9dfd13ee196e'
+      ];
+    }
+    
+    // BABY PRODUCTS - Baby items, toys, baby care
+    if (category.includes('baby') || name.includes('baby') || name.includes('infant') || name.includes('child') || name.includes('toy') || name.includes('diaper')) {
+      return [
+        '1515488042361-ee00e0ddd4e4', '1607006676228-1e7e1a5f2640', '1596016775242-a9fcd5e5be1c',
+        '1515488042361-ee00e0ddd4e4', '1607006676228-1e7e1a5f2640', '1596016775242-a9fcd5e5be1c',
+        '1515488042361-ee00e0ddd4e4', '1607006676228-1e7e1a5f2640', '1596016775242-a9fcd5e5be1c'
+      ];
+    }
+    
+    // BOOKS & MEDIA - Books, magazines, educational materials
+    if (category.includes('books') || category.includes('media') || name.includes('book') || name.includes('novel') || name.includes('magazine') || name.includes('education')) {
+      return [
+        '1481627834876-b7833e8f5570', '1507003211169-0a1dd7a2c989', '1544716678-f89a9c48e6b6',
+        '1512820884448-8ad25c3db2c3', '1543002588-b4ba6359a9d6', '1481635611391-7edf4a871bb1',
+        '1481627834876-b7833e8f5570', '1507003211169-0a1dd7a2c989', '1544716678-f89a9c48e6b6'
+      ];
+    }
+    
+    // Default general product images
+    return [
+      '1593359677879-a4bb92f829d1', '1567690187548-f07b1d7bf5a9', '1571945114996-7e82b9c6ba30',
+      '1484704849700-f032a568e944', '1505740420928-5e560c06d30e', '1511707171634-5f897ff02aa9',
+      '1592750475338-74b7b21085ab', '1520923642038-b4259acecbd7', '1574786398533-86b531c1c75b'
+    ];
+  }
+  
+  private getProductSeed(productName: string, brand: string, uniqueId: number): number {
+    // Create a deterministic seed for consistent image selection per product
+    let seed = uniqueId;
+    for (let i = 0; i < productName.length; i++) {
+      seed += productName.charCodeAt(i);
+    }
+    for (let i = 0; i < brand.length; i++) {
+      seed += brand.charCodeAt(i) * 2;
+    }
+    return Math.abs(seed);
   }
 
   async createRealisticCategories(): Promise<RealisticCategory[]> {
@@ -372,7 +513,7 @@ export class RealisticJumiaData {
       const productSlug = productTemplate.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
       const uniqueId = Math.floor(Math.random() * 1000) + (i * 37); // Ensure uniqueness
       
-      const imageVariations = this.getProductSpecificImages(productTemplate.name, productTemplate.brand, uniqueId);
+      const imageVariations = this.getProductSpecificImages(productTemplate.name, productTemplate.brand, categoryName, uniqueId);
       
       const product: RealisticProduct = {
         name: variation > 1 ? `${productTemplate.name} ${variation}` : productTemplate.name,

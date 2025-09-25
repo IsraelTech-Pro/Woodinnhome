@@ -212,10 +212,11 @@ export default function Products() {
         </Sheet>
       </div>
 
-      <div className="relative">
-        {/* Desktop Sidebar Filters - Fixed Position */}
-        <div className="hidden md:block fixed left-4 top-20 w-64 z-10 bg-white border rounded-lg p-4 max-h-[calc(100vh-6rem)] overflow-y-auto shadow-lg">
-          <h3 className="font-semibold mb-4">Filters</h3>
+      <div className="flex gap-6">
+        {/* Desktop Sidebar Filters - Sticky Position */}
+        <div className="hidden md:block w-64 flex-shrink-0">
+          <div className="sticky top-4 bg-white border rounded-lg p-4 max-h-[calc(100vh-2rem)] overflow-y-auto shadow-lg">
+            <h3 className="font-semibold mb-4">Filters</h3>
                 
           {/* Categories Navigation */}
           <div className="mb-6">
@@ -294,9 +295,10 @@ export default function Products() {
             </div>
           </div>
         </div>
+        </div>
 
-        {/* Products Grid - Scrollable with margin for fixed sidebar */}
-        <div className="md:ml-72 min-w-0">
+        {/* Products Grid - Flex grow to take remaining space */}
+        <div className="flex-1 min-w-0">
           {isLoading ? (
             <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((i) => (
