@@ -93,9 +93,9 @@ export default function Header() {
               <>
                 {/* User Account */}
                 <Link href="/account">
-                  <Button variant="ghost" size="sm" className="hidden md:flex text-sm items-center space-x-2" data-testid="account-link">
+                  <Button variant="ghost" size="sm" className="flex text-sm items-center space-x-1 lg:space-x-2" data-testid="account-link">
                     <User className="h-4 w-4" />
-                    <span>Hi, {user.firstName}</span>
+                    <span className="hidden sm:inline">Hi, {user.firstName}</span>
                   </Button>
                 </Link>
                 
@@ -104,11 +104,11 @@ export default function Header() {
                   variant="ghost" 
                   size="sm" 
                   onClick={logout}
-                  className="hidden md:flex text-sm items-center space-x-1"
+                  className="flex text-sm items-center space-x-1"
                   data-testid="logout-button"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
+                  <span className="hidden sm:inline">Logout</span>
                 </Button>
               </>
             ) : (
@@ -117,11 +117,11 @@ export default function Header() {
                 variant="ghost" 
                 size="sm" 
                 onClick={() => setAuthModalOpen(true)}
-                className="hidden md:flex text-sm items-center space-x-1"
+                className="flex text-sm items-center space-x-1"
                 data-testid="login-button"
               >
                 <User className="h-4 w-4" />
-                <span>Login</span>
+                <span className="hidden sm:inline">Login</span>
               </Button>
             )}
             
