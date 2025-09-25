@@ -1,15 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-interface User {
-  id: string;
-  username: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  phone?: string;
-  isAdmin: boolean;
-}
+import type { User } from '@shared/schema';
 
 interface AuthStore {
   user: User | null;

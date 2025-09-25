@@ -137,6 +137,20 @@ export const insertHomeSectionSchema = createInsertSchema(homeSections).omit({
   updatedAt: true,
 });
 
+// Auth schemas
+export const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+export const registerSchema = insertUserSchema.extend({
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: z.string().min(6, "Please confirm your password"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -161,6 +175,9 @@ export type InsertOrderItem = z.infer<typeof insertOrderItemSchema>;
 
 export type HomeSection = typeof homeSections.$inferSelect;
 export type InsertHomeSection = z.infer<typeof insertHomeSectionSchema>;
+
+export type LoginCredentials = z.infer<typeof loginSchema>;
+export type RegisterData = z.infer<typeof registerSchema>;
 
 // Extended types for API responses
 export type ProductWithCategory = Product & {

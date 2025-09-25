@@ -1,20 +1,22 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Search, ShoppingCart, Menu, X } from "lucide-react";
+import { Search, ShoppingCart, Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useCartStore } from "@/lib/cart-store";
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/lib/auth-store";
+import AuthModal from "@/components/auth-modal";
 import { type CartItemWithProduct } from "@shared/schema";
 import woodinnLogo from "@assets/Screenshot_2025-09-24_234230-removebg-preview_1758754088474.png";
 
 export default function Header() {
   const [location] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const { setOpen: setCartOpen } = useCartStore();
-  const { userId } = useAuthStore();
+  const { user, userId, logout } = useAuthStore();
 
   // Get cart data from API instead of Zustand store
   const { data: cartItems = [] } = useQuery<CartItemWithProduct[]>({
@@ -73,12 +75,42 @@ export default function Header() {
           
           {/* Actions */}
           <div className="flex items-center space-x-3">
-            {/* Account Link */}
-            <Link href="/account">
-              <Button variant="ghost" size="sm" className="hidden md:flex text-sm" data-testid="account-link">
-                Account
+            {/* Authentication */}
+            {user ? (
+              <>
+                {/* User Account */}
+                <Link href="/account">
+                  <Button variant="ghost" size="sm" className="hidden md:flex text-sm items-center space-x-2" data-testid="account-link">
+                    <User className="h-4 w-4" />
+                    <span>Hi, {user.firstName}</span>
+                  </Button>
+                </Link>
+                
+                {/* Logout */}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={logout}
+                  className="hidden md:flex text-sm items-center space-x-1"
+                  data-testid="logout-button"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </Button>
+              </>
+            ) : (
+              /* Login Button */
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setAuthModalOpen(true)}
+                className="hidden md:flex text-sm items-center space-x-1"
+                data-testid="login-button"
+              >
+                <User className="h-4 w-4" />
+                <span>Login</span>
               </Button>
-            </Link>
+            )}
             
             {/* Cart */}
             <Button 
@@ -129,15 +161,32 @@ export default function Header() {
           >
             Home Decor
           </Link>
-          <Link 
-            href="/account" 
-            className={`text-sm font-medium hover:text-primary transition-colors ${location === '/account' ? 'text-primary' : 'text-gray-600'}`}
-            data-testid="nav-account-desktop"
-          >
-            My Account
-          </Link>
+          {user ? (
+            <Link 
+              href="/account" 
+              className={`text-sm font-medium hover:text-primary transition-colors ${location === '/account' ? 'text-primary' : 'text-gray-600'}`}
+              data-testid="nav-account-desktop"
+            >
+              My Account
+            </Link>
+          ) : (
+            <button
+              onClick={() => setAuthModalOpen(true)}
+              className="text-sm font-medium hover:text-primary transition-colors text-gray-600"
+              data-testid="nav-login-desktop"
+            >
+              Login / Register
+            </button>
+          )}
         </div>
       </div>
+      
+      {/* Auth Modal */}
+      <AuthModal 
+        open={authModalOpen} 
+        onOpenChange={setAuthModalOpen}
+        defaultTab="login"
+      />
     </header>
   );
 }
