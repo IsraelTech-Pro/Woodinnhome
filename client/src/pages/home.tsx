@@ -167,9 +167,10 @@ function HorizontalProductSection({
   );
 }
 
-// Jumia-style Hero Section with Slideshow
-function JumiaHero() {
+// Jumia-style Hero Section with Slideshow and New Arrivals
+function JumiaHero({ newArrivalsProducts }: { newArrivalsProducts: ProductWithCategory[] }) {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
   
   // Woodinn Home promotional banners - image only (no text overlays)
   const banners = [
@@ -197,13 +198,25 @@ function JumiaHero() {
     return () => clearInterval(interval);
   }, [banners.length]);
 
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="bg-gray-50 py-2">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Left Sidebar - Categories - Hidden on mobile */}
           <div className="hidden md:block md:col-span-1">
-            <Card className="p-4">
+            <Card className="p-4 h-full">
               <h3 className="font-semibold mb-3 text-sm">Categories</h3>
               <div className="space-y-2">
                 {categories.map((category) => (
@@ -227,9 +240,10 @@ function JumiaHero() {
             </Card>
           </div>
 
-          {/* Main Slideshow - Takes full width on mobile, 3/4 on desktop */}
-          <div className="col-span-1 md:col-span-3">
-            <div className="relative h-64 lg:h-80 rounded-lg overflow-hidden">
+          {/* Right Column - Hero Slideshow + New Arrivals */}
+          <div className="col-span-1 md:col-span-3 flex flex-col gap-4">
+            {/* Main Slideshow */}
+            <div className="relative h-48 lg:h-56 rounded-lg overflow-hidden">
               {banners.map((banner, index) => (
                 <div
                   key={banner.id}
@@ -260,6 +274,64 @@ function JumiaHero() {
                 ))}
               </div>
             </div>
+
+            {/* Compact New Arrivals Section */}
+            {newArrivalsProducts.length > 0 && (
+              <Card className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center">
+                      <Sparkles className="h-4 w-4 text-white" />
+                    </div>
+                    <h3 className="font-semibold text-sm">New Arrivals</h3>
+                  </div>
+                  <Link href="/products">
+                    <Button variant="outline" size="sm" className="text-xs">
+                      See All
+                    </Button>
+                  </Link>
+                </div>
+                
+                {/* Horizontal scrolling products */}
+                <div className="relative group">
+                  <button
+                    onClick={scrollLeft}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white shadow-md border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    data-testid="hero-new-arrivals-scroll-left"
+                  >
+                    <ChevronLeft className="h-4 w-4 text-gray-600" />
+                  </button>
+                  
+                  <button
+                    onClick={scrollRight}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white shadow-md border flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    data-testid="hero-new-arrivals-scroll-right"
+                  >
+                    <ChevronRight className="h-4 w-4 text-gray-600" />
+                  </button>
+
+                  <div
+                    ref={scrollRef}
+                    className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 scroll-smooth"
+                    style={{ 
+                      scrollbarWidth: 'none', 
+                      msOverflowStyle: 'none',
+                    }}
+                    data-testid="hero-new-arrivals-container"
+                  >
+                    {newArrivalsProducts.slice(0, 6).map((product) => (
+                      <div 
+                        key={product.id} 
+                        className="flex-shrink-0 w-32 min-w-32"
+                        data-testid={`hero-new-arrivals-product-${product.id}`}
+                      >
+                        <ProductCard product={product} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Card>
+            )}
           </div>
         </div>
       </div>
@@ -300,19 +372,8 @@ export default function Home() {
 
   return (
     <div>
-      {/* Jumia-style Hero Section */}
-      <JumiaHero />
-
-      {/* New Arrivals Section */}
-      <HorizontalProductSection
-        title="New Arrivals"
-        subtitle="Latest additions to our store"
-        products={newArrivalsProducts}
-        icon={Sparkles}
-        bgColor="bg-orange-500"
-        textColor="text-white"
-        sectionId="new-arrivals"
-      />
+      {/* Jumia-style Hero Section with integrated New Arrivals */}
+      <JumiaHero newArrivalsProducts={newArrivalsProducts} />
 
       {/* Featured Products Section */}
       <HorizontalProductSection

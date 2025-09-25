@@ -212,61 +212,63 @@ export default function Products() {
         </Sheet>
       </div>
 
-      <div className="flex gap-8">
-        {/* Desktop Sidebar Filters */}
-        <div className="hidden md:block w-64 space-y-6">
-          <div>
-            <h3 className="font-semibold mb-4">Filters</h3>
-            
-            {/* Categories Filter */}
-            <div className="mb-6">
-              <h4 className="font-medium mb-3">Categories</h4>
-              <div className="space-y-2">
-                {categories.map((category) => (
-                  <div key={category.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`category-${category.id}`}
-                      checked={selectedCategories.includes(category.id)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setSelectedCategories([...selectedCategories, category.id]);
-                        } else {
-                          setSelectedCategories(selectedCategories.filter(id => id !== category.id));
-                        }
-                      }}
-                      data-testid={`filter-category-${category.slug}`}
-                    />
-                    <Label htmlFor={`category-${category.id}`}>{category.name}</Label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Price Range Filter */}
+      <div className="flex gap-8 min-h-screen">
+        {/* Desktop Sidebar Filters - Sticky and Non-scrollable */}
+        <div className="hidden md:block w-64 flex-shrink-0">
+          <div className="sticky top-4 space-y-6 max-h-[calc(100vh-2rem)] overflow-y-auto">
             <div>
-              <h4 className="font-medium mb-3">Price Range (GHS)</h4>
-              <div className="space-y-2">
-                <Input
-                  type="number"
-                  placeholder="Min price"
-                  value={priceRange.min || ""}
-                  onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value ? Number(e.target.value) : undefined })}
-                  data-testid="min-price"
-                />
-                <Input
-                  type="number"
-                  placeholder="Max price"
-                  value={priceRange.max || ""}
-                  onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value ? Number(e.target.value) : undefined })}
-                  data-testid="max-price"
-                />
+              <h3 className="font-semibold mb-4">Filters</h3>
+              
+              {/* Categories Filter */}
+              <div className="mb-6">
+                <h4 className="font-medium mb-3">Categories</h4>
+                <div className="space-y-2">
+                  {categories.map((category) => (
+                    <div key={category.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`category-${category.id}`}
+                        checked={selectedCategories.includes(category.id)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSelectedCategories([...selectedCategories, category.id]);
+                          } else {
+                            setSelectedCategories(selectedCategories.filter(id => id !== category.id));
+                          }
+                        }}
+                        data-testid={`filter-category-${category.slug}`}
+                      />
+                      <Label htmlFor={`category-${category.id}`}>{category.name}</Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Price Range Filter */}
+              <div>
+                <h4 className="font-medium mb-3">Price Range (GHS)</h4>
+                <div className="space-y-2">
+                  <Input
+                    type="number"
+                    placeholder="Min price"
+                    value={priceRange.min || ""}
+                    onChange={(e) => setPriceRange({ ...priceRange, min: e.target.value ? Number(e.target.value) : undefined })}
+                    data-testid="min-price"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Max price"
+                    value={priceRange.max || ""}
+                    onChange={(e) => setPriceRange({ ...priceRange, max: e.target.value ? Number(e.target.value) : undefined })}
+                    data-testid="max-price"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Products Grid */}
-        <div className="flex-1">
+        {/* Products Grid - Scrollable */}
+        <div className="flex-1 min-w-0">
           {isLoading ? (
             <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-2">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map((i) => (
