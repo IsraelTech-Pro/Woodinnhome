@@ -8,6 +8,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/lib/auth-store";
 import { type CartItemWithProduct } from "@shared/schema";
+import woodinnLogo from "@assets/Screenshot_2025-09-24_234230-removebg-preview_1758754088474.png";
 
 export default function Header() {
   const [location] = useLocation();
@@ -36,9 +37,11 @@ export default function Header() {
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2" data-testid="logo-link">
-            <div className="w-8 h-8 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">WH</span>
-            </div>
+            <img 
+              src={woodinnLogo} 
+              alt="Woodinn Home Logo" 
+              className="h-10 w-auto"
+            />
             <div className="hidden sm:block">
               <h1 className="text-lg font-bold text-secondary">Woodinn Home</h1>
               <p className="text-xs text-muted-foreground">Quality Home & Electrical</p>
