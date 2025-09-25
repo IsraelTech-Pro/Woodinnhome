@@ -11,6 +11,12 @@ import Cart from "@/pages/cart";
 import Checkout from "@/pages/checkout";
 import Account from "@/pages/account";
 import Admin from "@/pages/admin";
+import AboutUs from "@/pages/about-us";
+import Careers from "@/pages/careers";
+import TermsConditions from "@/pages/terms-conditions";
+import PrivacyNotice from "@/pages/privacy-notice";
+import CookieNotice from "@/pages/cookie-notice";
+import FlashSales from "@/pages/flash-sales";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import CartSidebar from "@/components/cart-sidebar";
@@ -31,6 +37,12 @@ function Router() {
           <Route path="/checkout" component={Checkout} />
           <Route path="/account" component={Account} />
           <Route path="/admin" component={Admin} />
+          <Route path="/about-us" component={AboutUs} />
+          <Route path="/careers" component={Careers} />
+          <Route path="/terms-conditions" component={TermsConditions} />
+          <Route path="/privacy-notice" component={PrivacyNotice} />
+          <Route path="/cookie-notice" component={CookieNotice} />
+          <Route path="/flash-sales" component={FlashSales} />
           <Route component={NotFound} />
         </Switch>
       </main>
