@@ -356,15 +356,34 @@ export default function Home() {
   const newArrivalsProducts = allProducts.slice(0, 8);
   const bestSellersProducts = allProducts.slice(2, 10);
   const featuredProducts_alt = allProducts.slice(1, 9);
-  const electronicsProducts = allProducts.filter(p => p.category?.slug === 'electronics').slice(0, 8);
-  const furnitureProducts = allProducts.filter(p => p.category?.slug === 'furniture').slice(0, 8);
 
-  const categoryIcons = {
-    furniture: Sofa,
+  // Category icon mapping
+  const categoryIcons: Record<string, LucideIcon> = {
+    smartphones: Phone,
     electronics: Tv,
-    "home-decor": Palette,
-    deals: Zap,
+    fashion: Palette,
+    "home-kitchen": Sofa,
+    "health-beauty": Sparkles,
+    appliances: Zap,
+    supermarket: Gift,
+    furniture: Sofa,
+    computing: Tv,
+    gaming: Play,
+    "sports-fitness": Award,
+    automobiles: Truck,
+    "baby-products": Gift,
+    "books-media": Download,
   };
+
+  // Create product sections for each category
+  const categorySections = categories.map(category => {
+    const categoryProducts = allProducts.filter(p => p.category?.slug === category.slug).slice(0, 8);
+    return {
+      category,
+      products: categoryProducts,
+      icon: categoryIcons[category.slug] || Tv
+    };
+  }).filter(section => section.products.length > 0);
 
   // Dynamic countdown for flash deals (24 hours from now) - memoized to prevent recalculation
   const flashDealsEndTime = useMemo(() => new Date(Date.now() + 24 * 60 * 60 * 1000), []);
@@ -393,27 +412,17 @@ export default function Home() {
         sectionId="best-sellers"
       />
 
-      {/* Electronics Section */}
-      {electronicsProducts.length > 0 && (
+      {/* All Category Sections - Display all 14 categories with their products */}
+      {categorySections.map((section) => (
         <HorizontalProductSection
-          title="Electronics & Appliances"
-          subtitle="Modern tech for your home"
-          products={electronicsProducts}
-          icon={Tv}
-          sectionId="electronics"
+          key={section.category.id}
+          title={section.category.name}
+          subtitle={section.category.description || `Browse ${section.category.name}`}
+          products={section.products}
+          icon={section.icon}
+          sectionId={section.category.slug}
         />
-      )}
-
-      {/* Furniture Section */}
-      {furnitureProducts.length > 0 && (
-        <HorizontalProductSection
-          title="Furniture & Home"
-          subtitle="Comfort and style combined"
-          products={furnitureProducts}
-          icon={Sofa}
-          sectionId="furniture"
-        />
-      )}
+      ))}
 
       {/* Flash Deals Section */}
       <HorizontalProductSection

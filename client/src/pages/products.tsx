@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useParams, useLocation } from "wouter";
+import { useParams, useLocation, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Search, Filter, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -219,14 +219,46 @@ export default function Products() {
             <div>
               <h3 className="font-semibold mb-4">Filters</h3>
               
-              {/* Categories Filter */}
+              {/* Categories Navigation */}
               <div className="mb-6">
                 <h4 className="font-medium mb-3">Categories</h4>
+                <div className="space-y-2">
+                  <Link
+                    href="/products"
+                    className={`block text-sm px-3 py-2 rounded-md transition-colors ${
+                      !params.category 
+                        ? 'bg-orange-500 text-white font-medium' 
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-primary'
+                    }`}
+                    data-testid="category-nav-all"
+                  >
+                    All Products
+                  </Link>
+                  {categories.map((category) => (
+                    <Link
+                      key={category.id}
+                      href={`/products/${category.slug}`}
+                      className={`block text-sm px-3 py-2 rounded-md transition-colors ${
+                        params.category === category.slug 
+                          ? 'bg-orange-500 text-white font-medium' 
+                          : 'text-gray-600 hover:bg-gray-100 hover:text-primary'
+                      }`}
+                      data-testid={`category-nav-${category.slug}`}
+                    >
+                      {category.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Additional Filters */}
+              <div className="mb-6">
+                <h4 className="font-medium mb-3">Additional Filters</h4>
                 <div className="space-y-2">
                   {categories.map((category) => (
                     <div key={category.id} className="flex items-center space-x-2">
                       <Checkbox
-                        id={`category-${category.id}`}
+                        id={`filter-${category.id}`}
                         checked={selectedCategories.includes(category.id)}
                         onCheckedChange={(checked) => {
                           if (checked) {
@@ -235,9 +267,9 @@ export default function Products() {
                             setSelectedCategories(selectedCategories.filter(id => id !== category.id));
                           }
                         }}
-                        data-testid={`filter-category-${category.slug}`}
+                        data-testid={`additional-filter-${category.slug}`}
                       />
-                      <Label htmlFor={`category-${category.id}`}>{category.name}</Label>
+                      <Label htmlFor={`filter-${category.id}`} className="text-sm">{category.name}</Label>
                     </div>
                   ))}
                 </div>
