@@ -26,6 +26,115 @@ export class RealisticJumiaData {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  private getProductSpecificImages(productName: string, brand: string, uniqueId: number): string[] {
+    // Create mapping of product types to specific images
+    const productImageMappings: Record<string, string[]> = {
+      // Smartphones
+      'samsung galaxy': [
+        'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1593642634443-44adaa06623a?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      'iphone': [
+        'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      'tecno': [
+        'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1512499617640-c74ae3a79d37?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      'infinix': [
+        'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1512499617640-c74ae3a79d37?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      // Electronics
+      'sony tv': [
+        'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1567690187548-f07b1d7bf5a9?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      'samsung tv': [
+        'https://images.unsplash.com/photo-1567690187548-f07b1d7bf5a9?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1571945114996-7e82b9c6ba30?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      'headphones': [
+        'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      'speaker': [
+        'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      // Fashion
+      'nike': [
+        'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1460353581641-37baddab0fa2?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      'adidas': [
+        'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      'jeans': [
+        'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1507297230493-de48e06ba482?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      // Appliances
+      'refrigerator': [
+        'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      'washing machine': [
+        'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1571171637578-41bc2dd41cd2?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      // Computing
+      'macbook': [
+        'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      'laptop': [
+        'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=400&h=400&fit=crop&auto=format&q=80'
+      ],
+      // Default fallback images for unmatched products
+      'default': [
+        'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1505740106531-4243f3831c78?w=400&h=400&fit=crop&auto=format&q=80',
+        'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=400&fit=crop&auto=format&q=80'
+      ]
+    };
+
+    // Find the best matching image set based on product name
+    const productNameLower = productName.toLowerCase();
+    let matchedImages: string[] = productImageMappings['default'];
+
+    for (const [key, images] of Object.entries(productImageMappings)) {
+      if (productNameLower.includes(key)) {
+        matchedImages = images;
+        break;
+      }
+    }
+
+    // Add uniqueness by modifying the image ID parameter
+    return matchedImages.map((url, index) => {
+      const imageId = uniqueId + index;
+      return url.replace(/photo-[^?]+/, `photo-${imageId}`);
+    });
+  }
+
   async createRealisticCategories(): Promise<RealisticCategory[]> {
     console.log('🎯 Creating 14 realistic categories...');
     
@@ -276,12 +385,11 @@ export class RealisticJumiaData {
       const originalPrice = basePrice + Math.floor(Math.random() * 300) + 50;
       const hasDiscount = Math.random() > 0.3;
       
-      // Generate realistic product images using Unsplash with specific search terms
-      const imageVariations = [
-        `https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=400&fit=crop&auto=format&q=80`,
-        `https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop&auto=format&q=80`, 
-        `https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=400&h=400&fit=crop&auto=format&q=80`
-      ];
+      // Generate product-specific images that match the actual product
+      const productSlug = productTemplate.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const uniqueId = Math.floor(Math.random() * 1000) + (i * 37); // Ensure uniqueness
+      
+      const imageVariations = this.getProductSpecificImages(productTemplate.name, productTemplate.brand, uniqueId);
       
       const product: RealisticProduct = {
         name: variation > 1 ? `${productTemplate.name} ${variation}` : productTemplate.name,
