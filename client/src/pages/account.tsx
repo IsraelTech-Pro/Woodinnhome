@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Package, Clock, CheckCircle, XCircle, User, MapPin, Phone, Mail, Calendar, Shield, Edit3 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,21 +7,39 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useAuthStore } from "@/lib/auth-store";
 import AuthModal from "@/components/auth-modal";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { type OrderWithItems } from "@shared/schema";
 
+// Schema for profile editing
+const profileEditSchema = z.object({
+  firstName: z.string().min(2, "First name must be at least 2 characters"),
+  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+  email: z.string().email("Please enter a valid email address"),
+  phone: z.string().optional(),
+});
+
 export default function Account() {
-  const { user, userId, refreshUser } = useAuthStore();
+  const { user, userId, refreshUser, setUser } = useAuthStore();
   const [highlightedOrderId, setHighlightedOrderId] = useState<string | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const { toast } = useToast();
 
   // Refresh user data on mount to get latest admin status
   useEffect(() => {
     if (user && userId !== 'guest') {
       refreshUser();
     }
-  }, [refreshUser, user, userId]);
+  }, [userId]); // Only depend on userId to avoid infinite loop
 
   // Check for order highlight from URL
   useEffect(() => {
@@ -38,6 +56,65 @@ export default function Account() {
       }, 5000);
     }
   }, []);
+
+  // Profile editing form
+  const profileForm = useForm<z.infer<typeof profileEditSchema>>({
+    resolver: zodResolver(profileEditSchema),
+    defaultValues: {
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "", 
+      email: user?.email || "",
+      phone: user?.phone || "",
+    },
+  });
+
+  // Reset form when user changes
+  useEffect(() => {
+    if (user) {
+      profileForm.reset({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone || "",
+      });
+    }
+  }, [user, profileForm]);
+
+  // Profile update mutation
+  const updateProfileMutation = useMutation({
+    mutationFn: async (data: z.infer<typeof profileEditSchema>) => {
+      const response = await fetch('/api/auth/profile', {
+        method: 'PUT',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-user-id': userId,
+        },
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to update profile');
+      }
+      
+      return response.json();
+    },
+    onSuccess: (updatedUser) => {
+      setUser(updatedUser);
+      setEditProfileOpen(false);
+      toast({
+        title: "Profile updated successfully",
+        description: "Your profile information has been saved.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to update profile",
+        description: error.message || "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const { data: orders = [], isLoading } = useQuery<OrderWithItems[]>({
     queryKey: ["/api/orders", { userId }],
@@ -338,10 +415,101 @@ export default function Account() {
                       </div>
                       
                       <div className="flex flex-wrap gap-4">
-                        <Button variant="outline" size="sm" data-testid="edit-profile-button">
-                          <Edit3 className="h-4 w-4 mr-2" />
-                          Edit Profile
-                        </Button>
+                        <Dialog open={editProfileOpen} onOpenChange={setEditProfileOpen}>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm" data-testid="edit-profile-button">
+                              <Edit3 className="h-4 w-4 mr-2" />
+                              Edit Profile
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="sm:max-w-md">
+                            <DialogHeader>
+                              <DialogTitle>Edit Profile</DialogTitle>
+                            </DialogHeader>
+                            <Form {...profileForm}>
+                              <form 
+                                onSubmit={profileForm.handleSubmit((data) => updateProfileMutation.mutate(data))}
+                                className="space-y-4"
+                              >
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                  <FormField
+                                    control={profileForm.control}
+                                    name="firstName"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>First Name</FormLabel>
+                                        <FormControl>
+                                          <Input {...field} data-testid="edit-first-name" />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                  <FormField
+                                    control={profileForm.control}
+                                    name="lastName"
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormLabel>Last Name</FormLabel>
+                                        <FormControl>
+                                          <Input {...field} data-testid="edit-last-name" />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
+                                
+                                <FormField
+                                  control={profileForm.control}
+                                  name="email"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Email Address</FormLabel>
+                                      <FormControl>
+                                        <Input type="email" {...field} data-testid="edit-email" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                
+                                <FormField
+                                  control={profileForm.control}
+                                  name="phone"
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormLabel>Phone Number (Optional)</FormLabel>
+                                      <FormControl>
+                                        <Input type="tel" {...field} data-testid="edit-phone" />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                                
+                                <div className="flex gap-3 pt-4">
+                                  <Button 
+                                    type="submit" 
+                                    disabled={updateProfileMutation.isPending}
+                                    className="flex-1"
+                                    data-testid="save-profile-button"
+                                  >
+                                    {updateProfileMutation.isPending ? "Saving..." : "Save Changes"}
+                                  </Button>
+                                  <Button 
+                                    type="button" 
+                                    variant="outline" 
+                                    onClick={() => setEditProfileOpen(false)}
+                                    data-testid="cancel-edit-button"
+                                  >
+                                    Cancel
+                                  </Button>
+                                </div>
+                              </form>
+                            </Form>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                     </div>
                   </div>

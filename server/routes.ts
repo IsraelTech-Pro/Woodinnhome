@@ -106,6 +106,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update user profile endpoint
+  app.put("/api/auth/profile", async (req, res) => {
+    try {
+      const userId = req.headers['x-user-id'] as string;
+      if (!userId || userId === 'guest') {
+        return res.status(401).json({ error: "Not authenticated" });
+      }
+
+      const updateSchema = z.object({
+        firstName: z.string().min(2, "First name must be at least 2 characters"),
+        lastName: z.string().min(2, "Last name must be at least 2 characters"),
+        email: z.string().email("Please enter a valid email address"),
+        phone: z.string().optional(),
+      });
+
+      const validData = updateSchema.parse(req.body);
+
+      // Check if email is already taken by another user
+      const existingUser = await storage.getUserByEmail(validData.email);
+      if (existingUser && existingUser.id !== userId) {
+        return res.status(400).json({ error: "Email is already taken by another user" });
+      }
+
+      const updatedUser = await storage.updateUser(userId, validData);
+      if (!updatedUser) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      // Remove password from response
+      const { password, ...userResponse } = updatedUser;
+      res.json(userResponse);
+    } catch (error) {
+      console.error("Update profile error:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid profile data", details: error.errors });
+      }
+      res.status(500).json({ error: "Failed to update profile" });
+    }
+  });
+
   // Categories
   app.get("/api/categories", async (req, res) => {
     try {
