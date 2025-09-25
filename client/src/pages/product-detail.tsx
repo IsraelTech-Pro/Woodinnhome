@@ -174,7 +174,7 @@ export default function ProductDetail() {
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 mb-8">
           <Link href="/products">
-            <Button variant="ghost" size="sm" className="text-gray-600 hover:text-primary" data-testid="back-button">
+            <Button variant="ghost" size="sm" className="hidden lg:flex text-gray-600 hover:text-primary" data-testid="back-button">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Products
             </Button>
