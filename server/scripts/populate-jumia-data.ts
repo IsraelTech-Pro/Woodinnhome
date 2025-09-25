@@ -1,16 +1,16 @@
 #!/usr/bin/env tsx
 
-import { runRealJumiaScraper } from '../scraper/real-jumia-scraper';
+import { createRealisticJumiaData } from '../scraper/realistic-jumia-data';
 
 async function main() {
-  console.log('🎯 Starting REAL Jumia Ghana data population...');
+  console.log('🎯 Starting realistic Jumia Ghana data population...');
   
   try {
-    await runRealJumiaScraper();
-    console.log('✅ REAL data population completed successfully!');
+    await createRealisticJumiaData();
+    console.log('✅ Realistic data population completed successfully!');
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error during REAL data population:', error);
+    console.error('❌ Error during realistic data population:', error);
     process.exit(1);
   }
 }
