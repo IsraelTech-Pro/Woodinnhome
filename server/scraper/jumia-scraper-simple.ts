@@ -48,97 +48,94 @@ export class SimpleJumiaScraper {
   }
 
   generateProductData(categoryName: string, index: number): ScrapedProduct {
-    const productNames = {
+    const productData = {
       'Smartphones': [
-        'Samsung Galaxy A54 5G Smartphone',
-        'iPhone 15 Pro Max 256GB',
-        'Tecno Camon 30 Pro 5G',
-        'Infinix Note 40 Pro+',
-        'Xiaomi Redmi Note 13 Pro',
-        'Motorola Edge 50 Pro',
-        'OnePlus Nord CE 4',
-        'Realme GT 6T'
+        { name: 'Samsung Galaxy A54 5G Smartphone', brand: 'Samsung' },
+        { name: 'iPhone 15 Pro Max 256GB', brand: 'Apple' },
+        { name: 'Tecno Camon 30 Pro 5G', brand: 'Tecno' },
+        { name: 'Infinix Note 40 Pro+', brand: 'Infinix' },
+        { name: 'Xiaomi Redmi Note 13 Pro', brand: 'Xiaomi' },
+        { name: 'Motorola Edge 50 Pro', brand: 'Motorola' },
+        { name: 'OnePlus Nord CE 4', brand: 'OnePlus' },
+        { name: 'Realme GT 6T', brand: 'Realme' }
       ],
       'Electronics': [
-        'Sony 65-inch 4K Smart TV',
-        'Samsung Galaxy Buds2 Pro',
-        'JBL Charge 5 Bluetooth Speaker',
-        'Apple MacBook Air M2',
-        'Dell XPS 13 Laptop',
-        'Canon EOS R50 Camera',
-        'Nintendo Switch OLED',
-        'PlayStation 5 Console'
+        { name: 'Sony 65-inch 4K Smart TV', brand: 'Sony' },
+        { name: 'Samsung Galaxy Buds2 Pro', brand: 'Samsung' },
+        { name: 'JBL Charge 5 Bluetooth Speaker', brand: 'JBL' },
+        { name: 'Apple MacBook Air M2', brand: 'Apple' },
+        { name: 'Dell XPS 13 Laptop', brand: 'Dell' },
+        { name: 'Canon EOS R50 Camera', brand: 'Canon' },
+        { name: 'Nintendo Switch OLED', brand: 'Nintendo' },
+        { name: 'PlayStation 5 Console', brand: 'Sony' }
       ],
       'Fashion': [
-        'Nike Air Max 270 Sneakers',
-        'Adidas Ultraboost 22 Running Shoes',
-        'Zara Premium Cotton T-Shirt',
-        'H&M Slim Fit Jeans',
-        'Ralph Lauren Polo Shirt',
-        'Tommy Hilfiger Casual Jacket',
-        'Calvin Klein Watch',
-        'Ray-Ban Aviator Sunglasses'
+        { name: 'Nike Air Max 270 Sneakers', brand: 'Nike' },
+        { name: 'Adidas Ultraboost 22 Running Shoes', brand: 'Adidas' },
+        { name: 'Zara Premium Cotton T-Shirt', brand: 'Zara' },
+        { name: 'H&M Slim Fit Jeans', brand: 'H&M' },
+        { name: 'Ralph Lauren Polo Shirt', brand: 'Ralph Lauren' },
+        { name: 'Tommy Hilfiger Casual Jacket', brand: 'Tommy Hilfiger' },
+        { name: 'Calvin Klein Watch', brand: 'Calvin Klein' },
+        { name: 'Ray-Ban Aviator Sunglasses', brand: 'Ray-Ban' }
       ],
       'Home & Kitchen': [
-        'KitchenAid Stand Mixer Pro',
-        'Ninja Foodi Air Fryer',
-        'Cuisinart Coffee Maker',
-        'Le Creuset Dutch Oven',
-        'Dyson V15 Vacuum Cleaner',
-        'Instant Pot Duo 7-in-1',
-        'Breville Smart Toaster',
-        'OXO Good Grips Knife Set'
+        { name: 'KitchenAid Stand Mixer Pro', brand: 'KitchenAid' },
+        { name: 'Ninja Foodi Air Fryer', brand: 'Ninja' },
+        { name: 'Cuisinart Coffee Maker', brand: 'Cuisinart' },
+        { name: 'Le Creuset Dutch Oven', brand: 'Le Creuset' },
+        { name: 'Dyson V15 Vacuum Cleaner', brand: 'Dyson' },
+        { name: 'Instant Pot Duo 7-in-1', brand: 'Instant Pot' },
+        { name: 'Breville Smart Toaster', brand: 'Breville' },
+        { name: 'OXO Good Grips Knife Set', brand: 'OXO' }
       ],
       'Health & Beauty': [
-        'Nivea Men Face Care Set',
-        'L\'Oreal Paris Skincare Kit',
-        'Dove Body Wash Collection',
-        'Oral-B Electric Toothbrush',
-        'Philips Hair Trimmer Pro',
-        'Maybelline Makeup Palette',
-        'CeraVe Moisturizing Cream',
-        'Pantene Hair Care Bundle'
+        { name: 'Nivea Men Face Care Set', brand: 'Nivea' },
+        { name: 'L\'Oreal Paris Skincare Kit', brand: 'L\'Oreal' },
+        { name: 'Dove Body Wash Collection', brand: 'Dove' },
+        { name: 'Oral-B Electric Toothbrush', brand: 'Oral-B' },
+        { name: 'Philips Hair Trimmer Pro', brand: 'Philips' },
+        { name: 'Maybelline Makeup Palette', brand: 'Maybelline' },
+        { name: 'CeraVe Moisturizing Cream', brand: 'CeraVe' },
+        { name: 'Pantene Hair Care Bundle', brand: 'Pantene' }
       ],
       'Appliances': [
-        'Samsung 4-Door Refrigerator',
-        'LG Front Load Washing Machine',
-        'Whirlpool Microwave Oven',
-        'Bosch Dishwasher Series 6',
-        'Frigidaire Window AC Unit',
-        'Kenmore Elite Dryer',
-        'GE Profile Gas Range',
-        'Electrolux Vacuum Cleaner'
+        { name: 'Samsung 4-Door Refrigerator', brand: 'Samsung' },
+        { name: 'LG Front Load Washing Machine', brand: 'LG' },
+        { name: 'Whirlpool Microwave Oven', brand: 'Whirlpool' },
+        { name: 'Bosch Dishwasher Series 6', brand: 'Bosch' },
+        { name: 'Frigidaire Window AC Unit', brand: 'Frigidaire' },
+        { name: 'Kenmore Elite Dryer', brand: 'Kenmore' },
+        { name: 'GE Profile Gas Range', brand: 'GE' },
+        { name: 'Electrolux Vacuum Cleaner', brand: 'Electrolux' }
       ],
       'Supermarket': [
-        'Golden Rice Premium 50kg',
-        'Cooking Oil Blend 5L',
-        'Premium Tea Bags 100ct',
-        'Instant Coffee 200g Jar',
-        'Wheat Flour 10kg Bag',
-        'Canned Tomatoes 400g',
-        'Pasta Spaghetti 1kg',
-        'Breakfast Cereals 500g'
+        { name: 'Golden Rice Premium 50kg', brand: 'Golden' },
+        { name: 'Cooking Oil Blend 5L', brand: 'Premium' },
+        { name: 'Premium Tea Bags 100ct', brand: 'Lipton' },
+        { name: 'Instant Coffee 200g Jar', brand: 'Nescafe' },
+        { name: 'Wheat Flour 10kg Bag', brand: 'Gold Medal' },
+        { name: 'Canned Tomatoes 400g', brand: 'Hunt\'s' },
+        { name: 'Pasta Spaghetti 1kg', brand: 'Barilla' },
+        { name: 'Breakfast Cereals 500g', brand: 'Kellogg\'s' }
       ],
       'Furniture': [
-        'Modern Sectional Sofa Set',
-        'Oak Wood Dining Table',
-        'Memory Foam Mattress Queen',
-        'Executive Office Chair',
-        'Wooden Wardrobe 3-Door',
-        'Glass Coffee Table',
-        'Bookshelf 5-Tier Wood',
-        'Recliner Chair Leather'
+        { name: 'Modern Sectional Sofa Set', brand: 'Ashley' },
+        { name: 'Oak Wood Dining Table', brand: 'IKEA' },
+        { name: 'Memory Foam Mattress Queen', brand: 'Tempur-Pedic' },
+        { name: 'Executive Office Chair', brand: 'Herman Miller' },
+        { name: 'Wooden Wardrobe 3-Door', brand: 'IKEA' },
+        { name: 'Glass Coffee Table', brand: 'West Elm' },
+        { name: 'Bookshelf 5-Tier Wood', brand: 'IKEA' },
+        { name: 'Recliner Chair Leather', brand: 'La-Z-Boy' }
       ]
     };
 
-    const categoryProducts = productNames[categoryName as keyof typeof productNames] || ['Generic Product'];
-    const productName = categoryProducts[index % categoryProducts.length];
+    const categoryProducts = productData[categoryName as keyof typeof productData] || [{ name: 'Generic Product', brand: 'Generic' }];
+    const productInfo = categoryProducts[index % categoryProducts.length];
     
     const basePrice = Math.floor(Math.random() * 2000) + 100;
     const originalPrice = basePrice + Math.floor(Math.random() * 500) + 50;
-    
-    const brands = ['Samsung', 'Apple', 'LG', 'Sony', 'HP', 'Dell', 'Nike', 'Adidas', 'Zara', 'H&M'];
-    const brand = brands[Math.floor(Math.random() * brands.length)];
     
     const rating = (3.5 + Math.random() * 1.5).toFixed(1);
     
@@ -154,25 +151,25 @@ export class SimpleJumiaScraper {
     const selectedImages = imageBaseUrls.slice(0, 3).map(url => `${url}&q=80&fit=crop&auto=format`);
     
     return {
-      name: productName,
+      name: productInfo.name,
       price: basePrice.toString(),
       originalPrice: originalPrice.toString(),
       images: selectedImages,
-      description: `High-quality ${productName} with excellent features and performance. Perfect for your needs with reliable quality and great value.`,
+      description: `High-quality ${productInfo.name} with excellent features and performance. Perfect for your needs with reliable quality and great value.`,
       categoryName,
-      brand,
+      brand: productInfo.brand,
       inStock: Math.random() > 0.1, // 90% in stock
       rating,
       specifications: {
-        brand: brand,
+        brand: productInfo.brand,
         category: categoryName,
         warranty: '1 year',
         origin: 'International',
-        model: `${brand}-${Math.floor(Math.random() * 1000)}`
+        model: `${productInfo.brand}-${Math.floor(Math.random() * 1000)}`
       },
       tags: [
         categoryName.toLowerCase(),
-        brand.toLowerCase(),
+        productInfo.brand.toLowerCase(),
         'quality',
         'reliable',
         ...(originalPrice ? ['sale', 'discount'] : [])
