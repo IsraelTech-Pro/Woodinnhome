@@ -189,18 +189,18 @@ export default function ProductDetail() {
           <span className="font-medium text-gray-800" data-testid="product-breadcrumb-name">{product.name}</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 mb-8 lg:mb-12">
           {/* Product Images Gallery - Left Thumbnails + Main Image */}
-          <div className="space-y-4">
-            <div className="flex gap-4">
+          <div className="space-y-2 lg:space-y-4">
+            <div className="flex gap-2 lg:gap-4">
               {/* Thumbnail Column - Should be on LEFT */}
-              <div className="flex flex-col gap-2 w-20">
+              <div className="flex flex-col gap-1 lg:gap-2 w-12 lg:w-20">
                 {product.images.length > 1 ? (
                   product.images.map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                      className={`w-10 h-10 lg:w-16 lg:h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                         selectedImage === index 
                           ? 'border-orange-500 ring-2 ring-orange-200 shadow-md' 
                           : 'border-gray-200 hover:border-gray-300'
@@ -211,7 +211,7 @@ export default function ProductDetail() {
                     </button>
                   ))
                 ) : (
-                  <div className="w-16 h-16 flex items-center justify-center text-gray-400">
+                  <div className="w-10 h-10 lg:w-16 lg:h-16 flex items-center justify-center text-gray-400">
                     {/* Empty space for single image products */}
                   </div>
                 )}
@@ -278,80 +278,80 @@ export default function ProductDetail() {
           </div>
 
           {/* Enhanced Product Info */}
-          <div className="space-y-8">
+          <div className="space-y-4 lg:space-y-8">
             {/* Header */}
             <div>
-              <h1 className="text-4xl font-bold mb-3 text-gray-900 leading-tight" data-testid="product-title">
+              <h1 className="text-xl lg:text-4xl font-bold mb-2 lg:mb-3 text-gray-900 leading-tight" data-testid="product-title">
                 {product.name}
               </h1>
               {product.brand && (
-                <p className="text-gray-600 text-lg font-medium" data-testid="product-brand">{product.brand}</p>
+                <p className="text-gray-600 text-sm lg:text-lg font-medium" data-testid="product-brand">{product.brand}</p>
               )}
             </div>
 
             {/* Rating & Reviews */}
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-              <div className="flex items-center gap-4">
+            <div className="bg-white rounded-xl p-3 lg:p-4 shadow-sm border border-gray-100">
+              <div className="flex items-center gap-2 lg:gap-4">
                 <div className="flex items-center gap-2">
                   <div className="flex text-yellow-500">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star 
                         key={star} 
-                        className={`h-5 w-5 ${
+                        className={`h-4 w-4 lg:h-5 lg:w-5 ${
                           star <= Math.round(averageRating) ? 'fill-current' : 'opacity-30'
                         }`} 
                       />
                     ))}
                   </div>
-                  <span className="font-semibold text-gray-900" data-testid="product-rating">
+                  <span className="text-sm lg:text-base font-semibold text-gray-900" data-testid="product-rating">
                     {averageRating.toFixed(1)}
                   </span>
                 </div>
-                <span className="text-gray-500">({reviews.length} reviews)</span>
+                <span className="text-xs lg:text-sm text-gray-500">({reviews.length} reviews)</span>
               </div>
             </div>
 
             {/* Pricing */}
-            <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-6 border border-orange-100">
-              <div className="flex items-center gap-4 mb-2">
-                <span className="text-4xl font-bold text-gray-900" data-testid="product-price">
+            <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-4 lg:p-6 border border-orange-100">
+              <div className="flex items-center gap-2 lg:gap-4 mb-1 lg:mb-2">
+                <span className="text-xl lg:text-4xl font-bold text-gray-900" data-testid="product-price">
                   {formatPrice(product.price)}
                 </span>
                 {product.originalPrice && (
-                  <span className="text-2xl text-gray-500 line-through">
+                  <span className="text-lg lg:text-2xl text-gray-500 line-through">
                     {formatPrice(product.originalPrice)}
                   </span>
                 )}
               </div>
               {product.originalPrice && (
-                <p className="text-green-600 font-semibold">
+                <p className="text-sm lg:text-base text-green-600 font-semibold">
                   You save {formatPrice((parseFloat(product.originalPrice) - parseFloat(product.price)).toFixed(2))} ({discountPercentage}% off)
                 </p>
               )}
             </div>
 
             {/* Stock Status */}
-            <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-xl p-3 lg:p-4 shadow-sm border border-gray-100">
               {product.inStock ? (
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="text-green-700 font-semibold" data-testid="in-stock">
+                  <span className="text-sm lg:text-base text-green-700 font-semibold" data-testid="in-stock">
                     In Stock ({product.quantity} available)
                   </span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                  <span className="text-red-700 font-semibold" data-testid="out-of-stock">Out of Stock</span>
+                  <span className="text-sm lg:text-base text-red-700 font-semibold" data-testid="out-of-stock">Out of Stock</span>
                 </div>
               )}
             </div>
 
             {/* Quantity & Actions - Hidden for admin users */}
             {!(user?.isAdmin) && (
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 space-y-6">
-                <div className="flex items-center gap-4">
-                  <Label htmlFor="quantity" className="font-semibold">Quantity:</Label>
+              <div className="bg-white rounded-xl p-4 lg:p-6 shadow-sm border border-gray-100 space-y-4 lg:space-y-6">
+                <div className="flex items-center gap-2 lg:gap-4">
+                  <Label htmlFor="quantity" className="text-sm lg:text-base font-semibold">Quantity:</Label>
                   <div className="flex items-center gap-0 border border-gray-200 rounded-lg">
                     <Button
                       variant="ghost"
@@ -363,7 +363,7 @@ export default function ProductDetail() {
                     >
                       <Minus className="h-4 w-4" />
                     </Button>
-                    <span className="w-16 text-center font-semibold bg-gray-50 h-10 flex items-center justify-center" data-testid="quantity-display">
+                    <span className="w-12 lg:w-16 text-center text-sm lg:text-base font-semibold bg-gray-50 h-10 flex items-center justify-center" data-testid="quantity-display">
                       {quantity}
                     </span>
                     <Button
@@ -379,22 +379,22 @@ export default function ProductDetail() {
                   </div>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex gap-2 lg:gap-3">
                   <Button 
                     size="lg" 
-                    className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold h-12"
+                    className="flex-1 bg-orange-500 hover:bg-orange-600 text-white text-sm lg:text-base font-semibold h-10 lg:h-12"
                     onClick={handleAddToCart}
                     disabled={!product.inStock || addToCartMutation.isPending}
                     data-testid="add-to-cart-button"
                   >
-                    <ShoppingCart className="h-5 w-5 mr-2" />
+                    <ShoppingCart className="h-4 w-4 lg:h-5 lg:w-5 mr-1 lg:mr-2" />
                     {addToCartMutation.isPending ? 'Adding...' : 'Add to Cart'}
                   </Button>
-                  <Button variant="outline" size="lg" className="h-12 w-12" data-testid="wishlist-button">
-                    <Heart className="h-5 w-5" />
+                  <Button variant="outline" size="lg" className="h-10 lg:h-12 w-10 lg:w-12" data-testid="wishlist-button">
+                    <Heart className="h-4 w-4 lg:h-5 lg:w-5" />
                   </Button>
-                  <Button variant="outline" size="lg" className="h-12 w-12" data-testid="share-button">
-                    <Share className="h-5 w-5" />
+                  <Button variant="outline" size="lg" className="h-10 lg:h-12 w-10 lg:w-12" data-testid="share-button">
+                    <Share className="h-4 w-4 lg:h-5 lg:w-5" />
                   </Button>
                 </div>
               </div>
@@ -402,24 +402,24 @@ export default function ProductDetail() {
 
             {/* Key Features */}
             <Card className="shadow-sm border-gray-100">
-              <CardContent className="pt-6">
-                <h3 className="font-semibold mb-4 text-gray-900">Why Choose This Product?</h3>
-                <ul className="space-y-3">
+              <CardContent className="pt-4 lg:pt-6">
+                <h3 className="text-sm lg:text-base font-semibold mb-3 lg:mb-4 text-gray-900">Why Choose This Product?</h3>
+                <ul className="space-y-2 lg:space-y-3">
                   <li className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                    <span className="text-gray-700">Free delivery in Nsawam</span>
+                    <span className="text-xs lg:text-sm text-gray-700">Free delivery in Nsawam</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                    <span className="text-gray-700">Warranty included</span>
+                    <span className="text-xs lg:text-sm text-gray-700">Warranty included</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                    <span className="text-gray-700">Cash on delivery available</span>
+                    <span className="text-xs lg:text-sm text-gray-700">Cash on delivery available</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                    <span className="text-gray-700">Mobile Money payment accepted</span>
+                    <span className="text-xs lg:text-sm text-gray-700">Mobile Money payment accepted</span>
                   </li>
                 </ul>
               </CardContent>
@@ -428,8 +428,8 @@ export default function ProductDetail() {
         </div>
 
         {/* Enhanced Product Details Tabs */}
-        <Tabs defaultValue="description" className="mb-12">
-          <TabsList className="grid w-full grid-cols-3 bg-white rounded-xl shadow-sm border border-gray-100">
+        <Tabs defaultValue="description" className="mb-8 lg:mb-12">
+          <TabsList className="grid w-full grid-cols-3 bg-white rounded-xl shadow-sm border border-gray-100 text-xs lg:text-sm">
             <TabsTrigger value="description" className="data-[state=active]:bg-orange-500 data-[state=active]:text-white" data-testid="tab-description">
               Description
             </TabsTrigger>
@@ -441,25 +441,25 @@ export default function ProductDetail() {
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="description" className="mt-6">
+          <TabsContent value="description" className="mt-4 lg:mt-6">
             <Card className="shadow-sm border-gray-100">
-              <CardContent className="pt-6">
-                <p className="text-gray-700 leading-relaxed text-lg" data-testid="product-description">
+              <CardContent className="pt-4 lg:pt-6">
+                <p className="text-gray-700 leading-relaxed text-sm lg:text-lg" data-testid="product-description">
                   {product.description}
                 </p>
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="specifications" className="mt-6">
+          <TabsContent value="specifications" className="mt-4 lg:mt-6">
             <Card className="shadow-sm border-gray-100">
-              <CardContent className="pt-6">
+              <CardContent className="pt-4 lg:pt-6">
                 {product.specifications && typeof product.specifications === 'object' ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-testid="product-specifications">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-6" data-testid="product-specifications">
                     {Object.entries(product.specifications).map(([key, value]) => (
-                      <div key={key} className="flex justify-between items-center border-b border-gray-100 pb-3">
-                        <span className="font-semibold text-gray-900">{key}:</span>
-                        <span className="text-gray-600">{String(value)}</span>
+                      <div key={key} className="flex justify-between items-center border-b border-gray-100 pb-2 lg:pb-3">
+                        <span className="text-xs lg:text-sm font-semibold text-gray-900">{key}:</span>
+                        <span className="text-xs lg:text-sm text-gray-600">{String(value)}</span>
                       </div>
                     ))}
                   </div>
@@ -470,12 +470,12 @@ export default function ProductDetail() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="reviews" className="mt-6">
-            <div className="space-y-6">
+          <TabsContent value="reviews" className="mt-4 lg:mt-6">
+            <div className="space-y-4 lg:space-y-6">
               {/* Add Review */}
               <Card className="shadow-sm border-gray-100">
                 <CardHeader>
-                  <CardTitle className="text-gray-900">Write a Review</CardTitle>
+                  <CardTitle className="text-sm lg:text-base text-gray-900">Write a Review</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmitReview} className="space-y-4">
@@ -561,10 +561,10 @@ export default function ProductDetail() {
         {/* Related Products */}
         {relatedProductsFiltered.length > 0 && (
           <div>
-            <h2 className="text-3xl font-bold mb-8 text-gray-900" data-testid="related-products-title">
+            <h2 className="text-xl lg:text-3xl font-bold mb-4 lg:mb-8 text-gray-900" data-testid="related-products-title">
               You might also like
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-4">
               {relatedProductsFiltered.map((relatedProduct) => (
                 <ProductCard key={relatedProduct.id} product={relatedProduct} />
               ))}
